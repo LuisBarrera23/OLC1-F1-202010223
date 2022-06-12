@@ -36,10 +36,13 @@
                     <div class="tab-content" style="width: 100%;">
                         <div style="width:auto;">
                             <div class="col">
-                                <textarea wrap="off" class="form-control" id="Entrada1"
+                                <textarea onclick="obtenerFyC()" wrap="off" class="form-control contador" id="Entrada1"
                                     style="height: 400px"></textarea>
                                 <label for="Entrada1" class="fs-2"
                                     style="color: #000; padding-top: 10px;">Entrada</label>
+                                <label id="controlador1" class="fs-4"
+                                    style="color: rgb(88, 85, 85); padding-top: 10px; padding-left: 10px;">Linea:
+                                    Columna: </label>
                             </div>
                         </div>
 
@@ -57,6 +60,8 @@
     </div>
     <section class="page-section bg-primary text-white mb-0" id="acerca">
         <div class="container">
+            <button onclick="ejecutar()" type="button" class="btn btn-warning"
+                style="width: 150px; margin-top: 10px; margin-bottom: 10px;">Ejecutar</button><br>
             <label for="archivopacientes">Archivo .LF</label>
             <input type="file" class="form-control-file" id="archivopacientes" accept=".lf">
 
@@ -92,7 +97,7 @@
             reader.onload = function () {
                 entrada.value = reader.result;
             }
-            var texto=reader.readAsText(contenido);
+            var texto = reader.readAsText(contenido);
         }
         let cantidad = 1;
         function agregarpestaña() {
@@ -104,9 +109,12 @@
                     <div class="tab-content" style="width: 100%;">
                         <div style="width:auto;">
                             <div class="col">
-                                <textarea wrap="off" class="form-control" id="Entrada${cantidad}" style="height: 400px"></textarea>
+                                <textarea onclick="obtenerFyC()" wrap="off" class="form-control contador" id="Entrada${cantidad}" style="height: 400px"></textarea>
                                 <label for="Entrada${cantidad}" class="fs-2"
                                     style="color: #000; padding-top: 10px;">Entrada</label>
+                                <label id="controlador${cantidad}" class="fs-4"
+                                    style="color: rgb(88, 85, 85); padding-top: 10px; padding-left: 10px;">Linea:
+                                    Columna: </label>
                             </div>
                         </div>
 
@@ -150,6 +158,54 @@
 
                 saveAs(blob, filename);
             }
+        }
+
+        function ejecutar() {
+            var prueba = document.querySelector('input[name="css-tabs"]:checked');
+            var numero = prueba.value;
+            var entrada = document.getElementById("Entrada" + numero);
+            //guardado del archivo
+            var content = entrada.value;
+            let mensaje = {
+                "entrada": content
+            };
+            fetch('http://localhost:8080/ejecutar', {
+                method: 'POST',
+                body: JSON.stringify(mensaje),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                }
+            })
+                .then(res => res.json())
+                .catch(err => {
+                    console.error('Error:', err)
+                    alert("Ocurrio un error, ver la consola")
+                })
+                .then(response => {
+                    console.log(response);
+                    Salida.value = response.salida;
+                })
+
+        }
+        
+        function obtenerFyC(){
+            var prueba = document.querySelector('input[name="css-tabs"]:checked');
+            var numero = prueba.value;
+            var textarea = document.getElementById('Entrada'+numero);
+            var controlador=document.getElementById('controlador'+numero);
+
+            var linea=textarea.value.substr(0,textarea.selectionStart).split("\n").length;
+
+            var columna=textarea.selectionStart;
+            var caracteres=0;
+            var linear=textarea.value.substr(0,columna).split("\n");
+            for (var i = 0; i < linear.length - 1; i++)
+                caracteres += linear[i].length + 1;
+            columna= columna - caracteres + 1;
+            console.log("linea: "+linea+" columna: "+columna)
+            controlador.innerHTML=`Linea: ${linea}  Columna: ${columna}`
+
         }
     </script>
 </body>
