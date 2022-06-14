@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "jison": "jison ./src/gramatica/gramatica.jison && move gramatica.js ./src/gramatica",
         "build": "tsc -w",
         "dev": "nodemon"
     },

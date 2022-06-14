@@ -1,110 +1,234 @@
-%{
 
-}%
 %lex
 %options case-insensitive
+%%
 
 // datos primitivos
-[+|-]*[0-9]+("."[0-9]+)?    return 'tk_decimal'
-[+|-]*[0-9]+                return 'tk_entero'
-"\"" [^\"]* "\""            return 'tk_cadena'
-"'" [^'] "'"                return 'tk_caracter'
-"true"|"false"              return 'tk_booleano'
+[-]?[0-9]+("."[0-9]+)?    {
+                                console.log("el lexema encontrado es :"+ yytext) 
+                                return 'tk_decimal'
+                            }
+[-]?[0-9]+                {
+                                console.log("el lexema encontrado es :"+ yytext) 
+                                return 'tk_entero'
+                            }   
+"\""[^\"]*"\""             {
+                                console.log("el lexema encontrado es :"+ yytext) 
+                                return 'tk_cadena'
+                            }
+"'"[^']"'"                 {
+                                console.log("el lexema encontrado es :"+ yytext) 
+                                return 'tk_caracter'
+                            }
+"true"|"false"             {
+                                console.log("el lexema encontrado es :"+ yytext) 
+                                return 'tk_booleano'
+                            }
 
 // palabras reservadas
-"int"                       return 'pr_int'
-"String"                    return 'pr_string'
-"boolean"                   return 'pr_bool'
-"double"                    return 'pr_double'
-"char"                      return 'pr_char'
+"int"           {
+                    console.log("el lexema encontrado es :"+ yytext);
+                    return 'pr_int';
+                }    
+"String"        {
+                    console.log("el lexema encontrado es :"+ yytext);
+                    return 'pr_string';
+                } 
+"boolean"       {
+                    console.log("el lexema encontrado es :"+ yytext);
+                    return 'pr_bool';
+                }    
+"double"        {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_double';
+                }   
+"char"          {
+                    console.log("el lexema encontrado es :"+ yytext);
+                    return 'pr_char';
+                }     
+"const"         {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_const';
+                } 
+ 
 
 // reconocimiento de simbolos
 
-";"     return ';' 
-"="     return '='
-":"     return ':'
-"{"     return '{'
-"}"     return '}'
-"("     return '('
-")"     return ')'
+";"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return ';';
+                }
+","             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return ',';
+                } 
+":"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return ':';
+                } 
+"{"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '{';
+                } 
+"}"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '}';
+                } 
+"("             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '(';
+                } 
+")"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return ')';
+                } 
 
-"++"    return '++'
-"+"     return '+' 
-"-"     return '-' 
-"**"    return '**'
-"*"     return '*' 
-"/"     return '/'
-"%"     return '%'
+"++"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '++';
+                } 
+"+"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '+';
+                } 
+"--"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '--';
+                } 
+"-"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '-';
+                }  
+"**"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '**';
+                } 
+"*"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '*';
+                }
+"//".*          {
+                    //console.log("comentario de una linea")
+                }
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     {} // comentario multiple línea
+"/"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '/';
+                } 
+"%"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '%';
+                } 
 
-"=="    return '=='
-"!="    return '!='
-">="    return ">="
-"<="    return "<="
-">"     return '>'
-"<"     return '<'
-"||"    return '||'
-"&&"    return '&&'
-"^"     return '^'
-"!"     return '!'
+"=="            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '==';
+                } 
+"="             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '=';
+                } 
+"!="            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '!=';
+                } 
+">="            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '>=';
+                } 
+"<="            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '<=';
+                } 
+">"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '>';
+                } 
+"<"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '<';
+                } 
+"||"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '||';
+                } 
+"&&"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '&&';
+                } 
+"^"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '^';
+                } 
+"!"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '!';
+                } 
 
-[a-zA-ZñÑ][a-zA-Z0-9_ñÑ]*	return 'id';
+[a-zA-ZñÑ][a-zA-Z0-9_ñÑ]*	{
+                                console.log("el lexema encontrado es :"+ yytext); 
+                                return 'id';
+                            }
 
+/* Comentarios */
+
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     {} // comentario multiple línea
 /* Espacios en blanco */
-[ \r\t\s]+                              {}
-\n                                      {}
-"//".*                                  {}   // comentario simple línea
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     {}   // comentario multiple líneas
+[ \r\t]+            {}
+\n                  {}
 
 <<EOF>>		            return 'EOF'
 
 .   { 
-        console.log("error lexico :"+yytext)
+        console.log("error lexico:"+yytext+ " fila: "+yylloc.first_line+" columna: "+yylloc.first_column);
         //push para array errores
     }
 
 /lex 
-
 %left '*' '/'
 %left '+' '-'
-
 %start INIT
 
-/*
+
 %%
 
-INIT: INSTRUCCIONES    EOF {return $1} ;
+INIT: INSTRUCCIONES    EOF;
 
 
-INSTRUCCIONES :   INSTRUCCIONES INSTRUCCION { $1.push($2); $$=$1;}
-              |   INSTRUCCION               { $$ = [$1] }
+INSTRUCCIONES : INSTRUCCIONES INSTRUCCION
+              | INSTRUCCION
               ;
 
 
-INSTRUCCION : DECLARACION   { $$=$1;} ;
+INSTRUCCION : DECLARACION;
 
-TIPO_DECLARACION: 'pr_const' |'pr_let' | 'pr_var' ; 
-TIPODATO_DECLARACION  :  'pr_numero' {$$=$1;}  
-                       | 'pr_bool'   {$$=$1;}
-                       | 'pr_string' {$$=$1;}
-                       ; 
+TIPO_DECLARACION:'pr_const'| ; 
 
-DECLARACION : TIPO_DECLARACION 'id' ':' TIPODATO_DECLARACION '=' E ';' 
-            {
-                $$= new Declaracion($2,$4,$6,@1.first_line, @1.first_column );
-            }
-            ;
+TIPODATO_DECLARACION:'pr_int'
+                    |'pr_string'
+                    |'pr_bool'
+                    |'pr_double'
+                    |'pr_char'
+                    ; 
 
-
-E: E '+' E  {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
-|  E '-' E  {$$= new Arithmetic($1,$3,ArithmeticOption.MENOS, @1.first_line, @1.first_column);}  
-|  E '*' E  {$$= new Arithmetic($1,$3,ArithmeticOption.MULTIPLICACION, @1.first_line, @1.first_column);}
-|  E '/' E  {$$= new Arithmetic($1,$3,ArithmeticOption.DIV, @1.first_line, @1.first_column);}
-|  F    {$$=$1;}
+DECLARACION : TIPO_DECLARACION TIPODATO_DECLARACION IDS '=' E ';'
 ;
 
-F: expreR_numero   {$$=new Literal($1,Type.NUMBER , @1.first_line, @1.first_column)}
-    |expreR_bool   {$$=new Literal($1,Type.BOOLEAN, @1.first_line, @1.first_column)}
-    |expreR_cadena {$$=new Literal($1,Type.STRING , @1.first_line, @1.first_column)}
+IDS: IDS ',' 'id' 
+    |'id'
+    ;
+    
+
+E: E '+' E
+|  E '-' E
+|  E '*' E
+|  E '/' E  
+|  F
 ;
 
-*/
+F:'tk_entero'
+    |'tk_decimal'
+    |'tk_cadena'
+    |'tk_caracter'
+    |'tk_booleano'
+;

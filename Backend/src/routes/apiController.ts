@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+const analizador=require("../gramatica/gramatica");
 
 class ApiController {
   public async funcion1(req: Request, res: Response) {
@@ -12,6 +13,8 @@ class ApiController {
   public async funcion2(req: Request, res: Response) {
     try {
       let mensaje=req.body.entrada;
+      let ast=analizador.parse(mensaje);
+      console.log(ast)
       res.json({ salida: "recibi: " + mensaje });
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 2" });
