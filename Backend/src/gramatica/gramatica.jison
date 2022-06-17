@@ -8,6 +8,10 @@
     const {Print} = require('../instrucciones/print');
     const {Println} = require('../instrucciones/println');
     const {Acceso}=require('../expresiones/acceso');
+
+    const {Singleton}=require("../patronSingleton/singleton");
+    const {Error}=require("../objetos/error");
+    const instancia=Singleton.getInstance();
 %}
 
 %lex
@@ -23,11 +27,11 @@
                                 console.log("el lexema encontrado es :"+ yytext) 
                                 return 'tk_entero'
                             }   
-"\""[^\"]*"\""             {
+[\"]("\\""\""|[^"])*[\"]    {
                                 console.log("el lexema encontrado es :"+ yytext) 
                                 return 'tk_cadena'
                             }
-"'"[^']"'"                 {
+[\']([^']|"\\n"|"\\t"|(\\)(\\))?[\'] {
                                 console.log("el lexema encontrado es :"+ yytext) 
                                 return 'tk_caracter'
                             }
@@ -199,7 +203,8 @@
 <<EOF>>		            return 'EOF'
 
 .   { 
-        console.log("error lexico:"+yytext+ " fila: "+yylloc.first_line+" columna: "+yylloc.first_column);
+        //console.log("error lexico:"+yytext+ " fila: "+yylloc.first_line+" columna: "+yylloc.first_column);
+        instancia.addError(new Error("Lexico","lexema: "+yytext+" no coincide con ningun patrón",yylloc.first_line,yylloc.first_column+1));
         //push para array errores
     }
 
@@ -232,7 +237,8 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             | error    ';'  { 
                 //get instance
                 //meterlo
-                console.log("Error sintactico en la linea"+(yylineno+1)); 
+                //console.log("Error sintactico en la linea"+(yylineno+1)); 
+                instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
 
@@ -257,7 +263,7 @@ TIPODATO_DECLARACION:'pr_int'       {$$=$1}
                     ; 
 
 DECLARACION : TIPO_DECLARACION TIPODATO_DECLARACION IDS '=' E ';'
-        {   console.log($3); 
+        {   //console.log($3); 
             $$=new Declaracion($3,$2,$5,$1,@1.first_line, @1.first_column);
         }
         ;
@@ -267,10 +273,13 @@ IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
     ;
     
 
-E: E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
+E: '-' E
+|E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
 |  E '-' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MENOS, @1.first_line, @1.first_column);}
 |  E '*' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MULTIPLICACION, @1.first_line, @1.first_column);}
 |  E '/' E      {$$= new Arithmetic($1,$3,ArithmeticOption.DIV, @1.first_line, @1.first_column);}
+|  E '**' E     {$$= new Arithmetic($1,$3,ArithmeticOption.POT, @1.first_line, @1.first_column);}
+|  E '%' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MODULO, @1.first_line, @1.first_column);}
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
 | 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}

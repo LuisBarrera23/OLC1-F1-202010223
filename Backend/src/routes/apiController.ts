@@ -25,10 +25,11 @@ class ApiController {
         try {
             elemento.ejecutar(env_padre)
         } catch (error) {
-            console.log(error); 
+            //console.log(error); 
         }
       }
       //console.log(env_padre);
+      console.log(singleton.getErrores());
       
       res.json({ salida: singleton.getConsola()});
     } catch (error) {

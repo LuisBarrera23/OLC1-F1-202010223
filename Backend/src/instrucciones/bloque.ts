@@ -26,7 +26,6 @@ export class Bloque extends Instruccion {
 
         for (const elemento  of this.instrucciones) {
             try {
-                
                 elemento.ejecutar(new_env)
             } catch (error) {
                 console.log(error);

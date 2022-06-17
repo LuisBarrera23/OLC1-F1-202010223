@@ -1,8 +1,9 @@
+import { Error } from "../objetos/error";
 
 export class Singleton{
     private static instance: Singleton;
     private consola:string="";
-    private errores:any[]=[];
+    private errores:Error[]=[];
 
     constructor(){}
 
@@ -26,11 +27,11 @@ export class Singleton{
         return this.consola;
     }
 
-    public addError(data: any){
+    public addError(data: Error){
         this.errores.push(data);
     }
 
-    public getErrores():any[]{
+    public getErrores():Error[]{
         return this.errores;
     }
 }
