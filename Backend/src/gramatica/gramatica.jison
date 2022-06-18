@@ -1,8 +1,14 @@
 %{
     const {Literal} = require('../expresiones/literal');
+
     const {Arithmetic} = require('../expresiones/aritmeticas');
     const {ArithmeticOption} = require('../expresiones/aritmeticOption');
+
+    const {Relacional} = require('../expresiones/relacional');
+    const {RelacionalOption} = require('../expresiones/relacionalOption');
+
     const {Declaracion} = require('../instrucciones/declaracion');
+    const {Asignar} = require('../instrucciones/asignar');
     const {Type} = require('../symbols/type');
     const {Bloque}= require('../instrucciones/bloque');
     const {Print} = require('../instrucciones/print');
@@ -211,8 +217,8 @@
 /lex 
 %left '||'
 %left '&&'
-// falta ^
-// faltan signos logicos
+%left '^'
+%left '>' '<' '>=' '<=' '==' '!='
 %left '+' '-'
 %left '*' '/' '%'
 %right '!'
@@ -224,27 +230,27 @@
 
 %%
 
-INIT: INSTRUCCIONES    EOF  {return $1};
+INIT: INSTRUCCIONES    EOF  {return $1}
+    | EOF {};
 
 
-INSTRUCCIONES : INSTRUCCIONES INSTRUCCION {$1.push($2); $$=$1;}
+INSTRUCCIONES :INSTRUCCIONES INSTRUCCION {$1.push($2); $$=$1;}
               | INSTRUCCION {$$=[$1];}
               ;
 
 
 INSTRUCCION : DECLARACION   {$$=$1;}
+            | ASIGNACION    {$$=$1;}
             | BLOQUE        {$$=$1;}
             | PRINT         {$$=$1;}
             | PRINTLN       {$$=$1;}
             | error    ';'  { 
-                //get instance
-                //meterlo
-                //console.log("Error sintactico en la linea"+(yylineno+1)); 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
 
 BLOQUE: '{' INSTRUCCIONES '}'   {$$=new Bloque($2, @1.first_line, @1.first_column)}
+        | '{' '}' {}
     ;
 
 PRINT: 'pr_print' '(' E ')' ';' {$$=new Print($3,@1.first_line, @1.first_column);}
@@ -269,19 +275,29 @@ DECLARACION : TIPO_DECLARACION TIPODATO_DECLARACION IDS '=' E ';'
             $$=new Declaracion($3,$2,$5,$1,@1.first_line, @1.first_column);
         }
         ;
+ASIGNACION: 'id' '=' E ';'
+        {
+            $$=new Asignar($1,$3,@1.first_line, @1.first_column);
+        }
+        ;
 
 IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
     |'id'           {$$=[$1]}
     ;
     
 
-E: '-' E
-|E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
+E: E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
 |  E '-' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MENOS, @1.first_line, @1.first_column);}
 |  E '*' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MULTIPLICACION, @1.first_line, @1.first_column);}
 |  E '/' E      {$$= new Arithmetic($1,$3,ArithmeticOption.DIV, @1.first_line, @1.first_column);}
 |  E '**' E     {$$= new Arithmetic($1,$3,ArithmeticOption.POT, @1.first_line, @1.first_column);}
 |  E '%' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MODULO, @1.first_line, @1.first_column);}
+|  E '>' E      {$$= new Relacional($1,$3,RelacionalOption.MAYOR, @1.first_line, @1.first_column);}
+|  E '<' E      {$$= new Relacional($1,$3,RelacionalOption.MENOR, @1.first_line, @1.first_column);}
+|  E '>=' E      {$$= new Relacional($1,$3,RelacionalOption.MAYORIGUAL, @1.first_line, @1.first_column);}
+|  E '<=' E      {$$= new Relacional($1,$3,RelacionalOption.MENORIGUAL, @1.first_line, @1.first_column);}
+|  E '==' E      {$$= new Relacional($1,$3,RelacionalOption.IGUALQUE, @1.first_line, @1.first_column);}
+|  E '!=' E      {$$= new Relacional($1,$3,RelacionalOption.DIFERENTEDE, @1.first_line, @1.first_column);}
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
 | 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}

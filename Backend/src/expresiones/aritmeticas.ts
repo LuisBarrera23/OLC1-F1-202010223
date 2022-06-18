@@ -218,8 +218,8 @@ export class Arithmetic extends Expression {
                     valor = (Number(nodoIzq.value.charCodeAt(0)) / Number(nodoDer.value))
                 }
                 resultado = {
-                    value: valor.toFixed(2),
-                    type: Type.DOUBLE
+                    value: Math.trunc(valor),
+                    type: Type.NUMBER
                 };
             } else if (nodoIzq.type == Type.DOUBLE && nodoDer.type == Type.DOUBLE) {
                 resultado = {

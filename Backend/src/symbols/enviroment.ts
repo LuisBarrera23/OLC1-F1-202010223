@@ -34,9 +34,14 @@ export class Environment {
     }
 
     public actualizarVariable(nombre: string, nuevoValor: any) {
-        for (let entry of Array.from(this.tabladesimbolos.entries())) {
-            if (entry[0] == nombre) entry[1].value = nuevoValor;
+        let env: Environment | null = this;
+        while (env != null) {
+            for (let entry of Array.from(env.tabladesimbolos.entries())) {
+                if (entry[0] == nombre) entry[1].value = nuevoValor;
+            }
+            env=env.anterior;
         }
+        
     }
 
     public get_variable(nombre: string): Symbol | undefined | null {
@@ -46,6 +51,15 @@ export class Environment {
             env = env.anterior;
         }
         return null;
+    }
+
+    public get_arregloSimbols():Symbol[]{
+        let simbolos:Symbol[]=[];
+        for (let entry of Array.from(this.tabladesimbolos.entries())) {
+            simbolos.push(entry[1]);
+        }
+
+        return simbolos;
     }
 
     // public mostraranteriores() {

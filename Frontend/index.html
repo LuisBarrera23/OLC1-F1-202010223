@@ -94,6 +94,24 @@
             </div>
 
 
+            <div>
+                <label for="t2" class="fs-2" style="color: #000; padding-top: 10px;">Reporte de Tabla de Simbolos</label>
+                <button onclick="verSimbolos()" type="button" class="btn btn-danger"
+                style="width: 150px;  margin-bottom: 10px; margin-left: 10px;">Ver Tabla de simbolos</button>
+                <table id="t2" class="table table-dark table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Editable</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tSimbolos"></tbody>
+                </table>
+            </div>
+
+
 
 
         </div>
@@ -252,6 +270,52 @@
                       <td>${element.descripcion}</td>
                       <td>${element.line}</td>
                       <td>${element.column}</td>
+                      </tr>`;
+                    });
+                    tabla.innerHTML = cadena;
+                })
+        }
+
+        function verSimbolos() {
+            var tabla = document.querySelector("#tSimbolos")
+            var cadena="";
+            tabla.innerHTML = "";
+            
+            fetch('http://localhost:8080/simbolos', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                }
+            })
+                .then(res => res.json())
+                .catch(err => {
+                    console.error('Error:', err)
+                    alert("Ocurrio un error, ver la consola")
+                })
+                .then(response => {
+                    console.log(response)
+                    response.forEach(element => {
+                    
+                        let tipo="";
+                        if(element.type==0){
+                            tipo="INT"
+                        }else if(element.type==1){
+                            tipo="DOUBLE"
+                        }else if(element.type==2){
+                            tipo="STRING"
+                        }else if(element.type==3){
+                            tipo="BOOLEAN"
+                        }else if(element.type==4){
+                            tipo="CHAR"
+                        }else if(element.type==5){
+                            tipo="ERROR"
+                        }
+                        cadena += `<tr>
+                      <td>${element.value}</td>
+                      <td>${element.id}</td>
+                      <td>${tipo}</td>
+                      <td>${element.editable}</td>
                       </tr>`;
                     });
                     tabla.innerHTML = cadena;

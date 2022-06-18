@@ -4,7 +4,10 @@ import { Environment } from "../symbols/enviroment";
 import { Error } from "../objetos/error";
 const analizador=require("../gramatica/gramatica");
 
+import { Symbol } from "../symbols/symbols"
+
 const singleton=Singleton.getInstance();
+let env_padre = new Environment(null);
 
 class ApiController {
   public async funcion1(req: Request, res: Response) {
@@ -20,7 +23,7 @@ class ApiController {
       let mensaje=req.body.entrada;
       singleton.reset();
       let ast=analizador.parse(mensaje);
-      const env_padre = new Environment(null);
+      env_padre = new Environment(null);
 
       for (const elemento  of ast) {
         try {
@@ -43,10 +46,19 @@ class ApiController {
 
       let errores:Error[]=singleton.getErrores();
 
-      console.log(errores);
       res.json(errores);
     } catch (error) {
-      res.status(400).send({ msg: "error en funcion 1" });
+      res.status(400).send({ msg: "error en funcion 3" });
+    }
+  }
+
+  public async funcion4(req: Request, res: Response) {
+    try {
+      let simbolos:Symbol[]=env_padre.get_arregloSimbols();
+      console.log(simbolos);
+      res.json(simbolos);
+    } catch (error) {
+      res.status(400).send({ msg: "error en funcion 4" });
     }
   }
 }

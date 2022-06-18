@@ -72,12 +72,12 @@
   }
 */
 var gramatica = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[22,23,24,25,26],$V1=[2,13],$V2=[1,8],$V3=[1,10],$V4=[1,11],$V5=[1,12],$V6=[1,13],$V7=[2,5,12,13,14,18,20,22,23,24,25,26],$V8=[1,27],$V9=[1,31],$Va=[1,33],$Vb=[1,30],$Vc=[1,34],$Vd=[1,35],$Ve=[1,36],$Vf=[1,37],$Vg=[1,38],$Vh=[1,44],$Vi=[1,43],$Vj=[1,45],$Vk=[1,46],$Vl=[1,47],$Vm=[1,48],$Vn=[11,17,31,32,33,34,35,36],$Vo=[11,17,31,32],$Vp=[11,17,31,32,33,34,36];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[23,24,25,26,27],$V1=[2,16],$V2=[1,10],$V3=[1,13],$V4=[1,14],$V5=[1,15],$V6=[1,16],$V7=[1,12],$V8=[2,5,13,14,15,19,21,23,24,25,26,27,30],$V9=[1,32],$Va=[1,34],$Vb=[1,36],$Vc=[1,37],$Vd=[1,38],$Ve=[1,39],$Vf=[1,40],$Vg=[1,41],$Vh=[1,48],$Vi=[1,49],$Vj=[1,50],$Vk=[1,51],$Vl=[1,52],$Vm=[1,53],$Vn=[1,54],$Vo=[1,55],$Vp=[1,56],$Vq=[1,57],$Vr=[1,58],$Vs=[1,59],$Vt=[12,18,32,33,34,35,36,37,38,39,40,41,42,43],$Vu=[12,18,32,33,38,39,40,41,42,43],$Vv=[12,18,32,33,34,35,37,38,39,40,41,42,43],$Vw=[12,18,38,39,40,41,42,43];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"INIT":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"DECLARACION":7,"BLOQUE":8,"PRINT":9,"PRINTLN":10,";":11,"{":12,"}":13,"pr_print":14,"(":15,"E":16,")":17,"pr_println":18,"TIPO_DECLARACION":19,"pr_const":20,"TIPODATO_DECLARACION":21,"pr_int":22,"pr_string":23,"pr_bool":24,"pr_double":25,"pr_char":26,"IDS":27,"=":28,"id":29,",":30,"-":31,"+":32,"*":33,"/":34,"**":35,"%":36,"F":37,"tk_entero":38,"tk_decimal":39,"tk_cadena":40,"tk_caracter":41,"tk_booleano":42,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",11:";",12:"{",13:"}",14:"pr_print",15:"(",17:")",18:"pr_println",20:"pr_const",22:"pr_int",23:"pr_string",24:"pr_bool",25:"pr_double",26:"pr_char",28:"=",29:"id",30:",",31:"-",32:"+",33:"*",34:"/",35:"**",36:"%",38:"tk_entero",39:"tk_decimal",40:"tk_cadena",41:"tk_caracter",42:"tk_booleano"},
-productions_: [0,[3,2],[4,2],[4,1],[6,1],[6,1],[6,1],[6,1],[6,2],[8,3],[9,5],[10,5],[19,1],[19,0],[21,1],[21,1],[21,1],[21,1],[21,1],[7,6],[27,3],[27,1],[16,2],[16,3],[16,3],[16,3],[16,3],[16,3],[16,3],[16,3],[16,1],[16,1],[37,1],[37,1],[37,1],[37,1],[37,1]],
+symbols_: {"error":2,"INIT":3,"INSTRUCCIONES":4,"EOF":5,"INSTRUCCION":6,"DECLARACION":7,"ASIGNACION":8,"BLOQUE":9,"PRINT":10,"PRINTLN":11,";":12,"{":13,"}":14,"pr_print":15,"(":16,"E":17,")":18,"pr_println":19,"TIPO_DECLARACION":20,"pr_const":21,"TIPODATO_DECLARACION":22,"pr_int":23,"pr_string":24,"pr_bool":25,"pr_double":26,"pr_char":27,"IDS":28,"=":29,"id":30,",":31,"+":32,"-":33,"*":34,"/":35,"**":36,"%":37,">":38,"<":39,">=":40,"<=":41,"==":42,"!=":43,"F":44,"tk_entero":45,"tk_decimal":46,"tk_cadena":47,"tk_caracter":48,"tk_booleano":49,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",12:";",13:"{",14:"}",15:"pr_print",16:"(",18:")",19:"pr_println",21:"pr_const",23:"pr_int",24:"pr_string",25:"pr_bool",26:"pr_double",27:"pr_char",29:"=",30:"id",31:",",32:"+",33:"-",34:"*",35:"/",36:"**",37:"%",38:">",39:"<",40:">=",41:"<=",42:"==",43:"!=",45:"tk_entero",46:"tk_decimal",47:"tk_cadena",48:"tk_caracter",49:"tk_booleano"},
+productions_: [0,[3,2],[3,1],[4,2],[4,1],[6,1],[6,1],[6,1],[6,1],[6,1],[6,2],[9,3],[9,2],[10,5],[11,5],[20,1],[20,0],[22,1],[22,1],[22,1],[22,1],[22,1],[7,6],[8,4],[28,3],[28,1],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,3],[17,1],[17,1],[44,1],[44,1],[44,1],[44,1],[44,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -86,95 +86,115 @@ switch (yystate) {
 case 1:
 return $$[$0-1]
 break;
-case 2:
+case 3:
 $$[$0-1].push($$[$0]); this.$=$$[$0-1];
 break;
-case 3:
+case 4:
 this.$=[$$[$0]];
 break;
-case 4: case 5: case 6: case 7: case 30:
+case 5: case 6: case 7: case 8: case 9: case 39:
 this.$=$$[$0];
 break;
-case 8:
+case 10:
  
-                //get instance
-                //meterlo
-                //console.log("Error sintactico en la linea"+(yylineno+1)); 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",_$[$0-1].first_line,_$[$0-1].first_column));
                 
 break;
-case 9:
+case 11:
 this.$=new Bloque($$[$0-1], _$[$0-2].first_line, _$[$0-2].first_column)
 break;
-case 10:
+case 13:
 this.$=new Print($$[$0-2],_$[$0-4].first_line, _$[$0-4].first_column);
 break;
-case 11:
+case 14:
 this.$=new Println($$[$0-2],_$[$0-4].first_line, _$[$0-4].first_column);
 break;
-case 12:
+case 15:
 this.$=false
 break;
-case 13:
+case 16:
 this.$=true
 break;
-case 14: case 15: case 16: case 17: case 18:
+case 17: case 18: case 19: case 20: case 21:
 this.$=$$[$0]
 break;
-case 19:
+case 22:
    //console.log($$[$0-3]); 
             this.$=new Declaracion($$[$0-3],$$[$0-4],$$[$0-1],$$[$0-5],_$[$0-5].first_line, _$[$0-5].first_column);
         
 break;
-case 20:
-$$[$0].unshift($$[$0-2]); this.$=$$[$0];
-break;
-case 21:
-this.$=[$$[$0]]
-break;
 case 23:
-this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MAS, _$[$0-2].first_line, _$[$0-2].first_column);
+
+            this.$=new Asignar($$[$0-3],$$[$0-1],_$[$0-3].first_line, _$[$0-3].first_column);
+        
 break;
 case 24:
-this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MENOS, _$[$0-2].first_line, _$[$0-2].first_column);
+$$[$0].unshift($$[$0-2]); this.$=$$[$0];
 break;
 case 25:
-this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MULTIPLICACION, _$[$0-2].first_line, _$[$0-2].first_column);
+this.$=[$$[$0]]
 break;
 case 26:
-this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.DIV, _$[$0-2].first_line, _$[$0-2].first_column);
+this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MAS, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 27:
-this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.POT, _$[$0-2].first_line, _$[$0-2].first_column);
+this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MENOS, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 28:
-this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MODULO, _$[$0-2].first_line, _$[$0-2].first_column);
+this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MULTIPLICACION, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 29:
-this.$=$$[$0-1]
+this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.DIV, _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 30:
+this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.POT, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 31:
-this.$=new Acceso($$[$0],_$[$0].first_line, _$[$0].first_column);
+this.$= new Arithmetic($$[$0-2],$$[$0],ArithmeticOption.MODULO, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 32:
-this.$=new Literal($$[$0],Type.NUMBER, _$[$0].first_line, _$[$0].first_column)
+this.$= new Relacional($$[$0-2],$$[$0],RelacionalOption.MAYOR, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 33:
-this.$=new Literal($$[$0],Type.DOUBLE, _$[$0].first_line, _$[$0].first_column)
+this.$= new Relacional($$[$0-2],$$[$0],RelacionalOption.MENOR, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 34:
-this.$=new Literal($$[$0],Type.STRING, _$[$0].first_line, _$[$0].first_column)
+this.$= new Relacional($$[$0-2],$$[$0],RelacionalOption.MAYORIGUAL, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 35:
-this.$=new Literal($$[$0],Type.CHAR, _$[$0].first_line, _$[$0].first_column)
+this.$= new Relacional($$[$0-2],$$[$0],RelacionalOption.MENORIGUAL, _$[$0-2].first_line, _$[$0-2].first_column);
 break;
 case 36:
+this.$= new Relacional($$[$0-2],$$[$0],RelacionalOption.IGUALQUE, _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 37:
+this.$= new Relacional($$[$0-2],$$[$0],RelacionalOption.DIFERENTEDE, _$[$0-2].first_line, _$[$0-2].first_column);
+break;
+case 38:
+this.$=$$[$0-1]
+break;
+case 40:
+this.$=new Acceso($$[$0],_$[$0].first_line, _$[$0].first_column);
+break;
+case 41:
+this.$=new Literal($$[$0],Type.NUMBER, _$[$0].first_line, _$[$0].first_column)
+break;
+case 42:
+this.$=new Literal($$[$0],Type.DOUBLE, _$[$0].first_line, _$[$0].first_column)
+break;
+case 43:
+this.$=new Literal($$[$0],Type.STRING, _$[$0].first_line, _$[$0].first_column)
+break;
+case 44:
+this.$=new Literal($$[$0],Type.CHAR, _$[$0].first_line, _$[$0].first_column)
+break;
+case 45:
 this.$=new Literal($$[$0],Type.BOOLEAN, _$[$0].first_line, _$[$0].first_column)
 break;
 }
 },
-table: [o($V0,$V1,{3:1,4:2,6:3,7:4,8:5,9:6,10:7,19:9,2:$V2,12:$V3,14:$V4,18:$V5,20:$V6}),{1:[3]},o($V0,$V1,{7:4,8:5,9:6,10:7,19:9,6:15,2:$V2,5:[1,14],12:$V3,14:$V4,18:$V5,20:$V6}),o($V7,[2,3]),o($V7,[2,4]),o($V7,[2,5]),o($V7,[2,6]),o($V7,[2,7]),{11:[1,16]},{21:17,22:[1,18],23:[1,19],24:[1,20],25:[1,21],26:[1,22]},o($V0,$V1,{6:3,7:4,8:5,9:6,10:7,19:9,4:23,2:$V2,12:$V3,14:$V4,18:$V5,20:$V6}),{15:[1,24]},{15:[1,25]},o($V0,[2,12]),{1:[2,1]},o($V7,[2,2]),o($V7,[2,8]),{27:26,29:$V8},{29:[2,14]},{29:[2,15]},{29:[2,16]},{29:[2,17]},{29:[2,18]},o($V0,$V1,{7:4,8:5,9:6,10:7,19:9,6:15,2:$V2,12:$V3,13:[1,28],14:$V4,18:$V5,20:$V6}),{15:$V9,16:29,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:39,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{28:[1,40]},{28:[2,21],30:[1,41]},o($V7,[2,9]),{17:[1,42],31:$Vh,32:$Vi,33:$Vj,34:$Vk,35:$Vl,36:$Vm},{15:$V9,16:49,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:50,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},o($Vn,[2,30]),o($Vn,[2,31]),o($Vn,[2,32]),o($Vn,[2,33]),o($Vn,[2,34]),o($Vn,[2,35]),o($Vn,[2,36]),{17:[1,51],31:$Vh,32:$Vi,33:$Vj,34:$Vk,35:$Vl,36:$Vm},{15:$V9,16:52,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{27:53,29:$V8},{11:[1,54]},{15:$V9,16:55,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:56,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:57,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:58,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:59,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},{15:$V9,16:60,29:$Va,31:$Vb,37:32,38:$Vc,39:$Vd,40:$Ve,41:$Vf,42:$Vg},o($Vo,[2,22],{33:$Vj,34:$Vk,35:$Vl,36:$Vm}),{17:[1,61],31:$Vh,32:$Vi,33:$Vj,34:$Vk,35:$Vl,36:$Vm},{11:[1,62]},{11:[1,63],31:$Vh,32:$Vi,33:$Vj,34:$Vk,35:$Vl,36:$Vm},{28:[2,20]},o($V7,[2,10]),o($Vo,[2,23],{33:$Vj,34:$Vk,35:$Vl,36:$Vm}),o($Vo,[2,24],{33:$Vj,34:$Vk,35:$Vl,36:$Vm}),o($Vp,[2,25],{35:$Vl}),o($Vp,[2,26],{35:$Vl}),o([11,17],[2,27],{31:$Vh,32:$Vi,33:$Vj,34:$Vk,35:$Vl,36:$Vm}),o($Vp,[2,28],{35:$Vl}),o($Vn,[2,29]),o($V7,[2,11]),o($V7,[2,19])],
-defaultActions: {14:[2,1],18:[2,14],19:[2,15],20:[2,16],21:[2,17],22:[2,18],53:[2,20]},
+table: [o($V0,$V1,{3:1,4:2,6:4,7:5,8:6,9:7,10:8,11:9,20:11,2:$V2,5:[1,3],13:$V3,15:$V4,19:$V5,21:$V6,30:$V7}),{1:[3]},o($V0,$V1,{7:5,8:6,9:7,10:8,11:9,20:11,6:18,2:$V2,5:[1,17],13:$V3,15:$V4,19:$V5,21:$V6,30:$V7}),{1:[2,2]},o($V8,[2,4]),o($V8,[2,5]),o($V8,[2,6]),o($V8,[2,7]),o($V8,[2,8]),o($V8,[2,9]),{12:[1,19]},{22:20,23:[1,21],24:[1,22],25:[1,23],26:[1,24],27:[1,25]},{29:[1,26]},o($V0,$V1,{6:4,7:5,8:6,9:7,10:8,11:9,20:11,4:27,2:$V2,13:$V3,14:[1,28],15:$V4,19:$V5,21:$V6,30:$V7}),{16:[1,29]},{16:[1,30]},o($V0,[2,15]),{1:[2,1]},o($V8,[2,3]),o($V8,[2,10]),{28:31,30:$V9},{30:[2,17]},{30:[2,18]},{30:[2,19]},{30:[2,20]},{30:[2,21]},{16:$Va,17:33,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},o($V0,$V1,{7:5,8:6,9:7,10:8,11:9,20:11,6:18,2:$V2,13:$V3,14:[1,42],15:$V4,19:$V5,21:$V6,30:$V7}),o($V8,[2,12]),{16:$Va,17:43,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:44,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{29:[1,45]},{29:[2,25],31:[1,46]},{12:[1,47],32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm,38:$Vn,39:$Vo,40:$Vp,41:$Vq,42:$Vr,43:$Vs},{16:$Va,17:60,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},o($Vt,[2,39]),o($Vt,[2,40]),o($Vt,[2,41]),o($Vt,[2,42]),o($Vt,[2,43]),o($Vt,[2,44]),o($Vt,[2,45]),o($V8,[2,11]),{18:[1,61],32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm,38:$Vn,39:$Vo,40:$Vp,41:$Vq,42:$Vr,43:$Vs},{18:[1,62],32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm,38:$Vn,39:$Vo,40:$Vp,41:$Vq,42:$Vr,43:$Vs},{16:$Va,17:63,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{28:64,30:$V9},o($V8,[2,23]),{16:$Va,17:65,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:66,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:67,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:68,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:69,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:70,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:71,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:72,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:73,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:74,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:75,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{16:$Va,17:76,30:$Vb,44:35,45:$Vc,46:$Vd,47:$Ve,48:$Vf,49:$Vg},{18:[1,77],32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm,38:$Vn,39:$Vo,40:$Vp,41:$Vq,42:$Vr,43:$Vs},{12:[1,78]},{12:[1,79]},{12:[1,80],32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm,38:$Vn,39:$Vo,40:$Vp,41:$Vq,42:$Vr,43:$Vs},{29:[2,24]},o($Vu,[2,26],{34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vu,[2,27],{34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vv,[2,28],{36:$Vl}),o($Vv,[2,29],{36:$Vl}),o([12,18],[2,30],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm,38:$Vn,39:$Vo,40:$Vp,41:$Vq,42:$Vr,43:$Vs}),o($Vv,[2,31],{36:$Vl}),o($Vw,[2,32],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vw,[2,33],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vw,[2,34],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vw,[2,35],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vw,[2,36],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vw,[2,37],{32:$Vh,33:$Vi,34:$Vj,35:$Vk,36:$Vl,37:$Vm}),o($Vt,[2,38]),o($V8,[2,13]),o($V8,[2,14]),o($V8,[2,22])],
+defaultActions: {3:[2,2],17:[2,1],21:[2,17],22:[2,18],23:[2,19],24:[2,20],25:[2,21],64:[2,24]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -424,9 +444,15 @@ _handle_error:
 }};
 
     const {Literal} = require('../expresiones/literal');
+
     const {Arithmetic} = require('../expresiones/aritmeticas');
     const {ArithmeticOption} = require('../expresiones/aritmeticOption');
+
+    const {Relacional} = require('../expresiones/relacional');
+    const {RelacionalOption} = require('../expresiones/relacionalOption');
+
     const {Declaracion} = require('../instrucciones/declaracion');
+    const {Asignar} = require('../instrucciones/asignar');
     const {Type} = require('../symbols/type');
     const {Bloque}= require('../instrucciones/bloque');
     const {Print} = require('../instrucciones/print');
@@ -766,77 +792,77 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:
                                 console.log("el lexema encontrado es :"+ yy_.yytext) 
-                                return 39
+                                return 46
                             
 break;
 case 1:
                                 console.log("el lexema encontrado es :"+ yy_.yytext) 
-                                return 38
+                                return 45
                             
 break;
 case 2:
                                 console.log("el lexema encontrado es :"+ yy_.yytext) 
-                                return 40
+                                return 47
                             
 break;
 case 3:
                                 console.log("el lexema encontrado es :"+ yy_.yytext) 
-                                return 41
+                                return 48
                             
 break;
 case 4:
                                 console.log("el lexema encontrado es :"+ yy_.yytext) 
-                                return 42
+                                return 49
                             
 break;
 case 5:
                     console.log("el lexema encontrado es :"+ yy_.yytext);
-                    return 22;
+                    return 23;
                 
 break;
 case 6:
                     console.log("el lexema encontrado es :"+ yy_.yytext);
-                    return 23;
+                    return 24;
                 
 break;
 case 7:
                     console.log("el lexema encontrado es :"+ yy_.yytext);
-                    return 24;
+                    return 25;
                 
 break;
 case 8:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 25;
+                    return 26;
                 
 break;
 case 9:
                     console.log("el lexema encontrado es :"+ yy_.yytext);
-                    return 26;
+                    return 27;
                 
 break;
 case 10:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 20;
+                    return 21;
                 
 break;
 case 11:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 14;
+                    return 15;
                 
 break;
 case 12:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 18;
+                    return 19;
                 
 break;
 case 13:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 11;
+                    return 12;
                 
 break;
 case 14:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 30;
+                    return 31;
                 
 break;
 case 15:
@@ -846,22 +872,22 @@ case 15:
 break;
 case 16:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 12;
+                    return 13;
                 
 break;
 case 17:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 13;
+                    return 14;
                 
 break;
 case 18:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 15;
+                    return 16;
                 
 break;
 case 19:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 17;
+                    return 18;
                 
 break;
 case 20:
@@ -881,17 +907,17 @@ case 22:
 break;
 case 23:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 31;
+                    return 33;
                 
 break;
 case 24:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 35;
+                    return 36;
                 
 break;
 case 25:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 33;
+                    return 34;
                 
 break;
 case 26:
@@ -902,47 +928,47 @@ case 27:
 break;
 case 28:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 34;
+                    return 35;
                 
 break;
 case 29:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 36;
+                    return 37;
                 
 break;
 case 30:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return '==';
+                    return 42;
                 
 break;
 case 31:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return 28;
+                    return 29;
                 
 break;
 case 32:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return '!=';
+                    return 43;
                 
 break;
 case 33:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return '>=';
+                    return 40;
                 
 break;
 case 34:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return '<=';
+                    return 41;
                 
 break;
 case 35:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return '>';
+                    return 38;
                 
 break;
 case 36:
                     console.log("el lexema encontrado es :"+ yy_.yytext); 
-                    return '<';
+                    return 39;
                 
 break;
 case 37:
@@ -967,7 +993,7 @@ case 40:
 break;
 case 41:
                                 console.log("el lexema encontrado es :"+ yy_.yytext); 
-                                return 29;
+                                return 30;
                             
 break;
 case 42:
