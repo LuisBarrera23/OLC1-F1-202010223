@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
+import { Error } from "../objetos/error";
 const analizador=require("../gramatica/gramatica");
 
 const singleton=Singleton.getInstance();
@@ -34,6 +35,18 @@ class ApiController {
       res.json({ salida: singleton.getConsola()});
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 2" });
+    }
+  }
+
+  public async funcion3(req: Request, res: Response) {
+    try {
+
+      let errores:Error[]=singleton.getErrores();
+
+      console.log(errores);
+      res.json(errores);
+    } catch (error) {
+      res.status(400).send({ msg: "error en funcion 1" });
     }
   }
 }

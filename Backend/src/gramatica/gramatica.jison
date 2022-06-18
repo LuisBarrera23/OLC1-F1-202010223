@@ -209,13 +209,15 @@
     }
 
 /lex 
-%right '!'
-%left '*' '/' '%'
-%left '+' '-'
-// faltan signos logicos
-// falta ^
-%left '&&'
 %left '||'
+%left '&&'
+// falta ^
+// faltan signos logicos
+%left '+' '-'
+%left '*' '/' '%'
+%right '!'
+
+
 
 %start INIT
 
