@@ -7,6 +7,12 @@
     const {Relacional} = require('../expresiones/relacional');
     const {RelacionalOption} = require('../expresiones/relacionalOption');
 
+    const {Logica} = require('../expresiones/logica');
+    const {logicaOption} = require('../expresiones/logicaOption');
+
+    const {Typof} = require('../expresiones/typeof');
+
+    const {Sentencia_if} = require('../instrucciones/if');
     const {Declaracion} = require('../instrucciones/declaracion');
     const {Asignar} = require('../instrucciones/asignar');
     const {Type} = require('../symbols/type');
@@ -25,11 +31,11 @@
 %%
 
 // datos primitivos
-[-]?[0-9]+("."[0-9]+)    {
+[0-9]+("."[0-9]+)    {
                                 console.log("el lexema encontrado es :"+ yytext) 
                                 return 'tk_decimal'
                             }
-[-]?[0-9]+                {
+[0-9]+                {
                                 console.log("el lexema encontrado es :"+ yytext) 
                                 return 'tk_entero'
                             }   
@@ -78,7 +84,19 @@
 "Println"       {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_println';
+                }
+"typeof"       {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_typeof';
+                }
+"if"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_if';
                 } 
+"else"          {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_else';
+                }  
  
 
 // reconocimiento de simbolos
@@ -222,6 +240,7 @@
 %left '+' '-'
 %left '*' '/' '%'
 %right '!'
+%left UMENOS
 
 
 
@@ -244,6 +263,7 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             | BLOQUE        {$$=$1;}
             | PRINT         {$$=$1;}
             | PRINTLN       {$$=$1;}
+            | IF
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
@@ -257,6 +277,20 @@ PRINT: 'pr_print' '(' E ')' ';' {$$=new Print($3,@1.first_line, @1.first_column)
     ;
 
 PRINTLN: 'pr_println' '(' E ')' ';' {$$=new Println($3,@1.first_line, @1.first_column);}
+    ;
+
+IF: 'pr_if' '(' E ')' BLOQUEIF ELSE       {$$=new Sentencia_if($3,$5,$6,@1.first_line, @1.first_column);}
+    | 'pr_if' '(' E ')' INSTRUCCION ELSE    {$$=new Sentencia_if($3,$5,$6,@1.first_line, @1.first_column);}
+;
+
+ELSE: 'pr_else' IF          {$$=$2;}
+    | 'pr_else' BLOQUEIF      {$$=$2;}
+    | 'pr_else' INSTRUCCION {$$=$2;}
+    |
+    ;
+
+BLOQUEIF: '{' INSTRUCCIONES '}'   {$$=new Bloque($2, @1.first_line, @1.first_column)}
+        | '{' '}' {}
     ;
 
 TIPO_DECLARACION:'pr_const' {$$=false}
@@ -284,9 +318,12 @@ ASIGNACION: 'id' '=' E ';'
 IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
     |'id'           {$$=[$1]}
     ;
+
+TYPEOF: 'pr_typeof' '(' E ')' {$$=$3};
     
 
-E: E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
+E: '-' E %prec UMENOS      {$$=new Arithmetic($2,$2,ArithmeticOption.NEGACION, @1.first_line, @1.first_column);}
+|  E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
 |  E '-' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MENOS, @1.first_line, @1.first_column);}
 |  E '*' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MULTIPLICACION, @1.first_line, @1.first_column);}
 |  E '/' E      {$$= new Arithmetic($1,$3,ArithmeticOption.DIV, @1.first_line, @1.first_column);}
@@ -298,6 +335,11 @@ E: E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @
 |  E '<=' E      {$$= new Relacional($1,$3,RelacionalOption.MENORIGUAL, @1.first_line, @1.first_column);}
 |  E '==' E      {$$= new Relacional($1,$3,RelacionalOption.IGUALQUE, @1.first_line, @1.first_column);}
 |  E '!=' E      {$$= new Relacional($1,$3,RelacionalOption.DIFERENTEDE, @1.first_line, @1.first_column);}
+|  E '||' E     {$$= new Logica($1,$3,logicaOption.OR, @1.first_line, @1.first_column);}
+|  E '&&' E     {$$= new Logica($1,$3,logicaOption.AND, @1.first_line, @1.first_column);}
+|  E '^' E      {$$= new Logica($1,$3,logicaOption.XOR, @1.first_line, @1.first_column);}
+|  '!' E        {$$= new Logica($2,$2,logicaOption.NOT, @1.first_line, @1.first_column);}
+|  TYPEOF       {$$= new Typof($1,@1.first_line, @1.first_column);}
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
 | 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}
