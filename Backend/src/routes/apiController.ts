@@ -25,6 +25,11 @@ class ApiController {
       let ast=analizador.parse(mensaje);
       env_padre = new Environment(null);
 
+
+    
+
+
+
       for (const elemento  of ast) {
         try {
             elemento.ejecutar(env_padre)
