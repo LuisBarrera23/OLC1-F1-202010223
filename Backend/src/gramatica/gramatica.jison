@@ -13,6 +13,8 @@
     const {Typof} = require('../expresiones/typeof');
 
     const {Sentencia_if} = require('../instrucciones/if');
+    const {metodo} = require('../instrucciones/metodo');
+    const {llamada} = require('../instrucciones/llamada');
     const {Declaracion} = require('../instrucciones/declaracion');
     const {Asignar} = require('../instrucciones/asignar');
     const {Type} = require('../symbols/type');
@@ -96,7 +98,23 @@
 "else"          {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_else';
+                } 
+"void"          {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_void';
                 }  
+"call"          {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_call';
+                }   
+"while"         {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_call';
+                }
+"do"            {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_call';
+                }      
  
 
 // reconocimiento de simbolos
@@ -263,11 +281,20 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             | BLOQUE        {$$=$1;}
             | PRINT         {$$=$1;}
             | PRINTLN       {$$=$1;}
-            | IF
+            | LLAMADA       {$$=$1;}
+            | METODO        {$$=$1;}
+            | IF            {$$=$1;}
+            | WHILE         {$$=$1;}
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
+
+LLAMADA: 'pr_call' 'id' '(' ')' ';' {$$=new llamada($2,null,@1.first_line, @1.first_column)}
+;
+
+METODO: 'pr_void' 'id' '(' ')' BLOQUE {$$=new metodo($2,null,$5,@1.first_line, @1.first_column )}
+;
 
 BLOQUE: '{' INSTRUCCIONES '}'   {$$=new Bloque($2, @1.first_line, @1.first_column)}
         | '{' '}' {}

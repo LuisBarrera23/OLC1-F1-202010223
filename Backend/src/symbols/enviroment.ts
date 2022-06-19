@@ -1,13 +1,39 @@
 import { Type } from "./type";
 import { Symbol } from "./symbols"
+import { metodo } from "../instrucciones/metodo";
 export class Environment {
     private tabladesimbolos: Map<string, Symbol>;
+    private tabladesimbolos_metodos: Map<string, any>;
+
     constructor(public anterior: Environment | null) {
         this.tabladesimbolos = new Map();
+        this.tabladesimbolos_metodos = new Map();
     }
 
     public vertablasimbolos() {
         return this.tabladesimbolos;
+    }
+
+    public guardar_metodo(nombre: string, valor:any) {
+    
+        //verificar que no existan duplicados
+        this.tabladesimbolos_metodos.set(nombre, valor);
+        console.log("metodo guardado");
+    }
+    public buscarMetodo(nombre: string): boolean {
+        for (let entry of Array.from(this.tabladesimbolos_metodos.entries())) {
+            if (entry[0] == nombre) return true;
+        }
+        return false;
+    }
+
+    public get_metodo(nombre: string): metodo | undefined | null {
+        let env: Environment | null = this;
+        while (env != null) {
+            if (env.tabladesimbolos_metodos.has(nombre)) return env.tabladesimbolos_metodos.get(nombre);
+            env = env.anterior;
+        }
+        return null;
     }
 
     public guardarVariable(nombre: string, valor: any, type: Type, editable: boolean): boolean {
