@@ -33,6 +33,8 @@
     const {Error}=require("../objetos/error");
     const {Parametro}=require("../objetos/parametro");
     const instancia=Singleton.getInstance();
+
+    const {Break}= require('../instrucciones/break');
 %}
 
 %lex
@@ -125,6 +127,11 @@
 "for"           {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_for';
+                } 
+
+"break"         {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_break';
                 } 
      
  
@@ -299,11 +306,14 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             | WHILE         {$$=$1;}
             | DOWHILE       {$$=$1;}
             | FOR           {$$=$1;}
+            | BREAK         {$$=$1;}
             | MOD ';'          {$$=$1;}
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
+
+BREAK: 'pr_break' ';' {$$=new Break(@1.first_line, @1.first_column);};
 
 WHILE: 'pr_while' '(' E ')' BLOQUE {$$=new While($3,$5,@1.first_line, @1.first_column);};
 

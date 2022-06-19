@@ -1,5 +1,6 @@
 import { Instruccion } from "../abstract/instruccion";
 import { Environment } from "../symbols/enviroment";
+import { Break } from "./break";
 
 export class Bloque extends Instruccion {
     constructor(
@@ -19,9 +20,13 @@ export class Bloque extends Instruccion {
 
         for (const elemento  of this.instrucciones) {
             try {
-                elemento.ejecutar(new_env)
+                if(elemento instanceof Break){
+                    return elemento
+                }else{
+                    elemento.ejecutar(new_env)
+                }
             } catch (error) {
-                console.log(error);
+                //console.log(error);
                 
             }
         }

@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
 import { Error } from "../objetos/error";
-const analizador=require("../gramatica/gramatica");
+const analizador = require("../gramatica/gramatica");
 
 import { Symbol } from "../symbols/symbols"
+import { metodo } from "../instrucciones/metodo";
 
-const singleton=Singleton.getInstance();
+const singleton = Singleton.getInstance();
 let env_padre = new Environment(null);
 
 class ApiController {
@@ -20,27 +21,37 @@ class ApiController {
 
   public async funcion2(req: Request, res: Response) {
     try {
-      let mensaje=req.body.entrada;
+      let mensaje = req.body.entrada;
       singleton.reset();
-      let ast=analizador.parse(mensaje);
+      let ast = analizador.parse(mensaje);
       env_padre = new Environment(null);
 
 
-    
 
-
-
-      for (const elemento  of ast) {
+      for (const elemento of ast) {
         try {
-            elemento.ejecutar(env_padre)
+          if (elemento instanceof metodo) {
+            elemento.ejecutar(env_padre);
+          }
         } catch (error) {
-            //console.log(error); 
+          //console.log(error); 
+        }
+      }
+
+
+      for (const elemento of ast) {
+        try {
+          if (!(elemento instanceof metodo)) {
+            elemento.ejecutar(env_padre);
+          }
+        } catch (error) {
+          //console.log(error); 
         }
       }
       //console.log(env_padre);
       console.log(singleton.getErrores());
-      
-      res.json({ salida: singleton.getConsola()});
+
+      res.json({ salida: singleton.getConsola() });
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 2" });
     }
@@ -49,7 +60,7 @@ class ApiController {
   public async funcion3(req: Request, res: Response) {
     try {
 
-      let errores:Error[]=singleton.getErrores();
+      let errores: Error[] = singleton.getErrores();
 
       res.json(errores);
     } catch (error) {
@@ -59,7 +70,7 @@ class ApiController {
 
   public async funcion4(req: Request, res: Response) {
     try {
-      let simbolos:Symbol[]=env_padre.get_arregloSimbols();
+      let simbolos: Symbol[] = env_padre.get_arregloSimbols();
       console.log(simbolos);
       res.json(simbolos);
     } catch (error) {

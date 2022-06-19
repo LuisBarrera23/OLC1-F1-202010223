@@ -4,6 +4,7 @@ import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
 import { Type } from "../symbols/type";
 import { Error } from "../objetos/error";
+import { Break } from "./break";
 
 export class While extends Instruccion {
     constructor(
@@ -30,6 +31,10 @@ export class While extends Instruccion {
             let exp=this.condicion.ejecutar(env);
             if(exp.value==true){
                 this.bloqueUnico.ejecutar(env);
+                // if(ejecucion instanceof Break){
+                //     console.log("encontre un break")
+                //     return;
+                // }
             }else{
                 break;
             }
