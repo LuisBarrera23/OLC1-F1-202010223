@@ -6,7 +6,7 @@ import { Error } from "../objetos/error";
 
 export class Acceso extends Expression{
     constructor(
-        private id:string,
+        public id:string,
         line:number,
         column:number
     ){

@@ -13,15 +13,8 @@ export class Bloque extends Instruccion {
 
     public ejecutar(env:Environment) {
 
-        //analisis semantivo 
 
         const new_env= new Environment(env);
-
-        // como acceder a otras tablas de simbolos padres
-        // while(env!=null){
-        //     //busqueda de dla variblea
-        //     env = env.anterior
-        // }
 
 
         for (const elemento  of this.instrucciones) {

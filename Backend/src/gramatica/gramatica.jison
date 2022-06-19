@@ -10,9 +10,15 @@
     const {Logica} = require('../expresiones/logica');
     const {logicaOption} = require('../expresiones/logicaOption');
 
+    const {Modificador} = require('../expresiones/modificador');
+    const {modificadorOption} = require('../expresiones/modificadorOption');
+
     const {Typof} = require('../expresiones/typeof');
 
     const {Sentencia_if} = require('../instrucciones/if');
+    const {While} = require('../instrucciones/while');
+    const {Dowhile} = require('../instrucciones/dowhile');
+    const {For} = require('../instrucciones/for');
     const {metodo} = require('../instrucciones/metodo');
     const {llamada} = require('../instrucciones/llamada');
     const {Declaracion} = require('../instrucciones/declaracion');
@@ -25,6 +31,7 @@
 
     const {Singleton}=require("../patronSingleton/singleton");
     const {Error}=require("../objetos/error");
+    const {Parametro}=require("../objetos/parametro");
     const instancia=Singleton.getInstance();
 %}
 
@@ -109,12 +116,17 @@
                 }   
 "while"         {
                     console.log("el lexema encontrado es :"+ yytext); 
-                    return 'pr_call';
+                    return 'pr_while';
                 }
 "do"            {
                     console.log("el lexema encontrado es :"+ yytext); 
-                    return 'pr_call';
-                }      
+                    return 'pr_do';
+                } 
+"for"           {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_for';
+                } 
+     
  
 
 // reconocimiento de simbolos
@@ -255,9 +267,9 @@
 %left '&&'
 %left '^'
 %left '>' '<' '>=' '<=' '==' '!='
-%left '+' '-'
+%left '+' '-' '++' '--'
 %left '*' '/' '%'
-%right '!'
+%right '!' '**'
 %left UMENOS
 
 
@@ -285,17 +297,55 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             | METODO        {$$=$1;}
             | IF            {$$=$1;}
             | WHILE         {$$=$1;}
+            | DOWHILE       {$$=$1;}
+            | FOR           {$$=$1;}
+            | MOD ';'          {$$=$1;}
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
 
-LLAMADA: 'pr_call' 'id' '(' ')' ';' {$$=new llamada($2,null,@1.first_line, @1.first_column)}
+WHILE: 'pr_while' '(' E ')' BLOQUE {$$=new While($3,$5,@1.first_line, @1.first_column);};
+
+FOR: 'pr_for' '(' INICIALIZACION ';' E ';' ACTUALIZACION ')' BLOQUE {$$=new For($3,$5,$7,$9,@1.first_line, @1.first_column);}
 ;
 
-METODO: 'pr_void' 'id' '(' ')' BLOQUE {$$=new metodo($2,null,$5,@1.first_line, @1.first_column )}
+INICIALIZACION: TIPODATO_DECLARACION 'id' '=' E {$$=new Declaracion($2,$1,$4,true,@1.first_line, @1.first_column);}
+            | 'id' '=' E {$$=new Asignar($1,$3,@1.first_line, @1.first_column);}
+        ;
+        
+ACTUALIZACION: 'id' '=' E {$$=new Asignar($1,$3,@1.first_line, @1.first_column);}
+            | MOD {$$=$1;}
+            ;
+
+
+DOWHILE: 'pr_do' BLOQUE 'pr_while' '(' E ')' ';' {$$=new Dowhile($5,$2,@1.first_line, @1.first_column)}
 ;
 
+LLAMADA: 'pr_call' 'id' '(' LLPARAMETROS ')' ';' {$$=new llamada($2,$4,@1.first_line, @1.first_column)}
+;
+
+LLPARAMETROS: LLPARAMETRO ',' LLPARAMETROS  {$3.unshift($1); $$=$3;}
+            | LLPARAMETRO {$$=[$1];}
+            |
+            ;
+
+LLPARAMETRO: E {$$=$1}
+            ;
+
+METODO: 'pr_void' 'id' '(' PARAMETROS ')' BLOQUE {$$=new metodo($2,$4,$6,@1.first_line, @1.first_column)}
+;
+
+PARAMETROS :PARAMETRO ',' PARAMETROS  {$3.unshift($1); $$=$3;}
+            | PARAMETRO {$$=[$1];}
+            | 
+            ;
+PARAMETRO:'pr_int' 'id'        {$$=new Parametro(Type.NUMBER,$2,@1.first_line, @1.first_column);}
+            |'pr_string' 'id'   {$$=new Parametro(Type.STRING,$2,@1.first_line, @1.first_column);}
+            |'pr_bool' 'id'     {$$=new Parametro(Type.BOOLEAN,$2,@1.first_line, @1.first_column);}
+            |'pr_double' 'id'   {$$=new Parametro(Type.DOUBLE,$2,@1.first_line, @1.first_column);}
+            |'pr_char' 'id'     {$$=new Parametro(Type.CHAR,$2,@1.first_line, @1.first_column);}
+            ; 
 BLOQUE: '{' INSTRUCCIONES '}'   {$$=new Bloque($2, @1.first_line, @1.first_column)}
         | '{' '}' {}
     ;
@@ -348,6 +398,12 @@ IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
 
 TYPEOF: 'pr_typeof' '(' E ')' {$$=$3};
     
+MOD: '++' E   {$$=new Modificador($2,modificadorOption.INCREIZQUIERDA,@1.first_line, @1.first_column);}
+    | E '++'  {$$=new Modificador($1,modificadorOption.INCREDERECHA,@1.first_line, @1.first_column);}
+    | E '--'  {$$=new Modificador($1,modificadorOption.DECREDERECHA,@1.first_line, @1.first_column);}
+    |'--' E   {$$=new Modificador($2,modificadorOption.DECREIZQUIERDA,@1.first_line, @1.first_column);}
+    ;
+
 
 E: '-' E %prec UMENOS      {$$=new Arithmetic($2,$2,ArithmeticOption.NEGACION, @1.first_line, @1.first_column);}
 |  E '+' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MAS, @1.first_line, @1.first_column);}
@@ -366,10 +422,11 @@ E: '-' E %prec UMENOS      {$$=new Arithmetic($2,$2,ArithmeticOption.NEGACION, @
 |  E '&&' E     {$$= new Logica($1,$3,logicaOption.AND, @1.first_line, @1.first_column);}
 |  E '^' E      {$$= new Logica($1,$3,logicaOption.XOR, @1.first_line, @1.first_column);}
 |  '!' E        {$$= new Logica($2,$2,logicaOption.NOT, @1.first_line, @1.first_column);}
+| MOD           {$$=$1;}
 |  TYPEOF       {$$= new Typof($1,@1.first_line, @1.first_column);}
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
-| 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}
+| 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);console.log("desde la gramatica");}
 ;
 
 F:'tk_entero'       {$$=new Literal($1,Type.NUMBER, @1.first_line, @1.first_column)}

@@ -315,6 +315,7 @@ export class Arithmetic extends Expression {
                     type: Type.DOUBLE
                 }
             }else{
+                console.log(nodoIzq.type+","+nodoDer.type)
                 throw instancia.addError(new Error("Semantico","tipo de potencia no valida",this.line,this.column));
             }
 

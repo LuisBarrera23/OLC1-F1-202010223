@@ -19,10 +19,11 @@ export class Literal extends Expression{
             return {value:Number(this.value),type:Type.DOUBLE}
         }
         else if (this.type == Type.STRING){
-            this.value = (this.value).slice(1,this.value.length-1);
+            //this.value = (this.value).slice(1,this.value.length-1);
+            this.value = (this.value).replaceAll("\\n","\n");
             this.value = (this.value).replaceAll("\\n","\n");
             this.value = (this.value).replaceAll("\\t","\t");
-            this.value = (this.value).replaceAll("\\\"","\"");
+            this.value = (this.value).replaceAll("\"","");
             return { value: this.value, type: Type.STRING }
         }
         else if (this.type == Type.BOOLEAN) {
