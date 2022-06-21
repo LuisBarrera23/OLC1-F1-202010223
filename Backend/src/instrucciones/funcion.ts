@@ -3,9 +3,11 @@ import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
 import { Error } from "../objetos/error";
 import { Parametro } from "../objetos/parametro";
+import { Type } from "../symbols/type";
 
-export class metodo extends Instruccion {
+export class Funcion extends Instruccion {
     constructor(
+        public tipo:Type,
         public id:string,
         public parametros:Parametro[],
         public bloque: Instruccion[],

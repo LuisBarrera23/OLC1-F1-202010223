@@ -8,7 +8,7 @@ import { Type } from "../symbols/type";
 export class Declaracion extends Instruccion {
     constructor(
         public nombre: String,
-        public tipo: string,
+        public tipo: Type,
         public expresion: Expression,
         public editable:boolean,
         public line: number,
@@ -34,21 +34,9 @@ export class Declaracion extends Instruccion {
                 throw instancia.addError(new Error("Semantico","La variable "+this.nombre+" ya existe, y no se puede repetir en esta ts",this.line+1,this.column+1));
             }
             
-            let comp:Type=Type.error;
 
-            if(this.tipo.toUpperCase()=="INT"){
-                comp=Type.NUMBER
-            }else if(this.tipo.toUpperCase()=="DOUBLE"){
-                comp=Type.DOUBLE
-            }else if(this.tipo.toUpperCase()=="CHAR"){
-                comp=Type.CHAR
-            }else if(this.tipo.toUpperCase()=="BOOLEAN"){
-                comp=Type.BOOLEAN
-            }else if(this.tipo.toUpperCase()=="STRING"){
-                comp=Type.STRING
-            }
 
-            if(expresion.type==comp){
+            if(expresion.type==this.tipo){
             }else{
                 throw instancia.addError(new Error("Semantico","El tipo de variable no coincide con la expresion ",this.line,this.column));
                 

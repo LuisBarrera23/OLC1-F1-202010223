@@ -35,6 +35,7 @@
     const instancia=Singleton.getInstance();
 
     const {Break}= require('../instrucciones/break');
+    const {Return}= require('../instrucciones/return');
 %}
 
 %lex
@@ -132,6 +133,14 @@
 "break"         {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_break';
+                } 
+"return"         {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_return';
+                } 
+"fun"         {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_fun';
                 } 
      
  
@@ -297,6 +306,7 @@ INSTRUCCIONES :INSTRUCCIONES INSTRUCCION {$1.push($2); $$=$1;}
 
 INSTRUCCION : DECLARACION   {$$=$1;}
             | ASIGNACION    {$$=$1;}
+            | FUNCION       {$$=$1;}
             | BLOQUE        {$$=$1;}
             | PRINT         {$$=$1;}
             | PRINTLN       {$$=$1;}
@@ -307,6 +317,7 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             | DOWHILE       {$$=$1;}
             | FOR           {$$=$1;}
             | BREAK         {$$=$1;}
+            | RETURN         {$$=$1;}
             | MOD ';'          {$$=$1;}
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
@@ -314,6 +325,8 @@ INSTRUCCION : DECLARACION   {$$=$1;}
             ;
 
 BREAK: 'pr_break' ';' {$$=new Break(@1.first_line, @1.first_column);};
+
+RETURN: 'pr_return' ';' {$$=new Return(@1.first_line, @1.first_column);};
 
 WHILE: 'pr_while' '(' E ')' BLOQUE {$$=new While($3,$5,@1.first_line, @1.first_column);};
 
@@ -345,6 +358,15 @@ LLPARAMETRO: E {$$=$1}
 
 METODO: 'pr_void' 'id' '(' PARAMETROS ')' BLOQUE {$$=new metodo($2,$4,$6,@1.first_line, @1.first_column)}
 ;
+
+FUNCION: 'pr_fun' TIPODATO IDS '(' PARAMETROS ')' BLOQUE {console.log("gg")};
+
+TIPODATO:'pr_int'       {$$=Type.NUMBER}
+        |'pr_string'    {$$=Type.STRING}
+        |'pr_bool'      {$$=Type.BOOLEAN}
+        |'pr_double'    {$$=Type.DOUBLE}
+        |'pr_char'      {$$=Type.CHAR}
+        ; 
 
 PARAMETROS :PARAMETRO ',' PARAMETROS  {$3.unshift($1); $$=$3;}
             | PARAMETRO {$$=[$1];}
@@ -384,23 +406,16 @@ TIPO_DECLARACION:'pr_const' {$$=false}
                 | {$$=true}
                 ; 
 
-TIPODATO_DECLARACION:'pr_int'       {$$=$1}
-                    |'pr_string'    {$$=$1}
-                    |'pr_bool'      {$$=$1}
-                    |'pr_double'    {$$=$1}
-                    |'pr_char'      {$$=$1}
-                    ; 
-
-DECLARACION : TIPO_DECLARACION TIPODATO_DECLARACION IDS '=' E ';'
-        {   //console.log($3); 
-            $$=new Declaracion($3,$2,$5,$1,@1.first_line, @1.first_column);
-        }
+DECLARACION : TIPO_DECLARACION TIPODATO IDS '=' E ';' {$$=new Declaracion($3,$2,$5,$1,@1.first_line, @1.first_column);}
         ;
+
 ASIGNACION: 'id' '=' E ';'
         {
             $$=new Asignar($1,$3,@1.first_line, @1.first_column);
         }
         ;
+
+
 
 IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
     |'id'           {$$=[$1]}

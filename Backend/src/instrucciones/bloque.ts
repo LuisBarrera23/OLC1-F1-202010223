@@ -1,6 +1,7 @@
 import { Instruccion } from "../abstract/instruccion";
 import { Environment } from "../symbols/enviroment";
 import { Break } from "./break";
+import { Return } from "./return";
 
 export class Bloque extends Instruccion {
     constructor(
@@ -20,13 +21,14 @@ export class Bloque extends Instruccion {
 
         for (const elemento  of this.instrucciones) {
             try {
-                if(elemento instanceof Break){
-                    return elemento
-                }else{
-                    elemento.ejecutar(new_env)
+                const x:any=elemento.ejecutar(new_env);
+                if(x instanceof Return){
+                    console.log("encontro un return en bloque")
+                    return x;
                 }
             } catch (error) {
-                //console.log(error);
+                console.log("------------------------------------------------")
+                console.log(elemento);
                 
             }
         }

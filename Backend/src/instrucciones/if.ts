@@ -29,7 +29,8 @@ export class Sentencia_if extends Instruccion {
         
 
         if(x.value==true){
-            this.bloque_verdadero.ejecutar(env)
+            const x:any=this.bloque_verdadero.ejecutar(env)
+            return x;
         }else{
             this.bloque_falso.ejecutar(env)
         }
