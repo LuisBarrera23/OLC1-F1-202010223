@@ -15,11 +15,14 @@
 
     const {Typof} = require('../expresiones/typeof');
 
+    const {llamadaF} = require('../expresiones/llamadaF');
+
     const {Sentencia_if} = require('../instrucciones/if');
     const {While} = require('../instrucciones/while');
     const {Dowhile} = require('../instrucciones/dowhile');
     const {For} = require('../instrucciones/for');
     const {metodo} = require('../instrucciones/metodo');
+    const {Funcion} = require('../instrucciones/funcion');
     const {llamada} = require('../instrucciones/llamada');
     const {Declaracion} = require('../instrucciones/declaracion');
     const {Asignar} = require('../instrucciones/asignar');
@@ -326,7 +329,8 @@ INSTRUCCION : DECLARACION   {$$=$1;}
 
 BREAK: 'pr_break' ';' {$$=new Break(@1.first_line, @1.first_column);};
 
-RETURN: 'pr_return' ';' {$$=new Return(@1.first_line, @1.first_column);};
+RETURN: 'pr_return' ';' {$$=new Return(null,@1.first_line, @1.first_column);}
+        | 'pr_return' E ';' {$$=new Return($2,@1.first_line, @1.first_column);} ;
 
 WHILE: 'pr_while' '(' E ')' BLOQUE {$$=new While($3,$5,@1.first_line, @1.first_column);};
 
@@ -359,7 +363,7 @@ LLPARAMETRO: E {$$=$1}
 METODO: 'pr_void' 'id' '(' PARAMETROS ')' BLOQUE {$$=new metodo($2,$4,$6,@1.first_line, @1.first_column)}
 ;
 
-FUNCION: 'pr_fun' TIPODATO IDS '(' PARAMETROS ')' BLOQUE {console.log("gg")};
+FUNCION:  TIPODATO 'id' '(' PARAMETROS ')' BLOQUE {$$=new Funcion($1,$2,$4,$6,@1.first_line, @1.first_column);};
 
 TIPODATO:'pr_int'       {$$=Type.NUMBER}
         |'pr_string'    {$$=Type.STRING}
@@ -406,8 +410,10 @@ TIPO_DECLARACION:'pr_const' {$$=false}
                 | {$$=true}
                 ; 
 
-DECLARACION : TIPO_DECLARACION TIPODATO IDS '=' E ';' {$$=new Declaracion($3,$2,$5,$1,@1.first_line, @1.first_column);}
+DECLARACION : 'pr_const' TIPODATO IDS '=' E ';' {$$=new Declaracion($3,$2,$5,true,@1.first_line, @1.first_column);}
+            | TIPODATO IDS '=' E ';' {$$=new Declaracion($2,$1,$4,true,@1.first_line, @1.first_column);}
         ;
+
 
 ASIGNACION: 'id' '=' E ';'
         {
@@ -451,7 +457,8 @@ E: '-' E %prec UMENOS      {$$=new Arithmetic($2,$2,ArithmeticOption.NEGACION, @
 |  TYPEOF       {$$= new Typof($1,@1.first_line, @1.first_column);}
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
-| 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);console.log("desde la gramatica");}
+| 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}
+| 'id' '(' LLPARAMETROS ')' {$$=new llamadaF($1,$3,@1.first_line, @1.first_column);}
 ;
 
 F:'tk_entero'       {$$=new Literal($1,Type.NUMBER, @1.first_line, @1.first_column)}

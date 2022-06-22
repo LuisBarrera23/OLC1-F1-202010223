@@ -1,14 +1,14 @@
 import { Expression } from "../abstract/expresion";
-import { Instruccion } from "../abstract/instruccion";
 import { Retorno } from "../abstract/retorno";
 import { Error } from "../objetos/error";
 import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
-import { Funcion } from "./funcion";
-import { metodo } from "./metodo";
-import { Return } from "./return";
+import { Type } from "../symbols/type";
+import { Funcion } from "../instrucciones/funcion";
+import { metodo } from "../instrucciones/metodo";
+import { Return } from "../instrucciones/return";
 
-export class llamada extends Instruccion {
+export class llamadaF extends Expression {
     constructor(
         public id: string,
         public parametros: Expression[],
@@ -18,9 +18,12 @@ export class llamada extends Instruccion {
         super(line, column);
     }
 
-    public ejecutar(env: Environment) {
+    public ejecutar(env: Environment):Retorno {
 
-
+        let resultado: Retorno = {
+            value: null,
+            type: Type.error
+        }
         //console.log(this);
         const metodo = env.get_metodo(this.id);
         const instancia = Singleton.getInstance();
@@ -35,7 +38,8 @@ export class llamada extends Instruccion {
         }
         if (metodo.parametros == undefined && this.parametros == undefined) {
             //console.log("vacio")
-            this.corrermetodo(env_para_parametros);
+            resultado=this.corrermetodo(env_para_parametros,env);
+            return resultado;
         }
         if (metodo.parametros == undefined && this.parametros != undefined || metodo.parametros != undefined && this.parametros == undefined) {
             throw instancia.addError(new Error("Semantico", "El metodo " + this.id + " no tiene la misma cantidad de parametros", this.line, this.column));
@@ -58,7 +62,8 @@ export class llamada extends Instruccion {
             });
             if (diferente == false) {
                 //metodo.bloque.ejecutar(env_para_parametros);
-                this.corrermetodo(env_para_parametros);
+                resultado=this.corrermetodo(env_para_parametros,env);
+                return resultado;
             } else {
                 throw instancia.addError(new Error("Semantico", "El metodo " + this.id + " no tiene parametros del mismo tipo", this.line, this.column));
             }
@@ -66,45 +71,39 @@ export class llamada extends Instruccion {
 
 
 
-
+        return resultado;
 
     }
 
-    public corrermetodo(env: Environment) {
-        const metod:any = env.get_metodo(this.id);
-        //console.log(metodo);
-        if (metod == null || metodo == undefined) {
-            return;
+    public corrermetodo(env: Environment,env_original:Environment):Retorno {
+        const instancia=Singleton.getInstance();
+        const metod:any = env_original.get_metodo(this.id);
+        let resultado: Retorno = {
+            value: null,
+            type: Type.error
+        }
+        if (metod == null || metod == undefined) {
+            return resultado;
         }
         let instrucciones: any[] = metod.bloque.instrucciones;
         //console.log(instrucciones);
         if(metod instanceof metodo){
-            for (const elemento of instrucciones) {
-                try {
-                    const x:any=elemento.ejecutar(env);
-                    if (x instanceof Return) {
-                        return;
-                    }
-                } catch (error) {
-                    //console.log(error);
-                }
-            }
+            throw instancia.addError(new Error("Semantico", "La expresion recibida " + this.id + " es un metodo no una funcion", this.line, this.column));
         }else if(metod instanceof Funcion){
             console.log("este es una funcion no un metodo")
             for (const elemento of instrucciones) {
                 try {
                     const x:any=elemento.ejecutar(env);
                     if (x instanceof Return) {
-                        return;
+                        let a:Retorno=x.Exp.ejecutar(env);
+                        return resultado={value:a.value,type:a.type};
                     }
                 } catch (error) {
-                    //console.log(error);
+                    console.log(error);
                 }
             }
         }
-    }
 
-    public graficar(env: Environment): string {
-        return "";
+        return resultado;
     }
 }

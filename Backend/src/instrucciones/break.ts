@@ -16,4 +16,8 @@ export class Break extends Instruccion {
 
 
     }
+
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

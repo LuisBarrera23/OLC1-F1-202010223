@@ -37,4 +37,7 @@ export class Sentencia_if extends Instruccion {
 
         
     }
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

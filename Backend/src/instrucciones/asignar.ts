@@ -4,6 +4,7 @@ import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
 import { Error } from "../objetos/error";
 import { Symbol } from "../symbols/symbols";
+let hash=require('object-hash')
 
 export class Asignar extends Instruccion{
     constructor(public nombre:string,public expresion:Expression,line:number,column:number){
@@ -26,6 +27,18 @@ export class Asignar extends Instruccion{
         }else{
             throw instancia.addError(new Error("Semantico","La asignacion de "+this.nombre+" no es del mismo tipo de la declarada",this.line,this.column));
         }
+    }
+
+    public graficar(env: Environment): string {
+        let distinto=this.line+this.column;
+        const instancia=Singleton.getInstance();
+        let cadena:string="";
+        cadena+=`nodo${hash(this)}[style=filled, label="Asignacion"]\n`;
+        cadena+=`nodo${hash(this.nombre)+distinto}[style=filled, label="${this.nombre}"]\n`
+        cadena+=`nodo${hash(this.expresion)+distinto}[style=filled, label="Expresion"]\n`
+        cadena+=`nodo${hash(this)}->nodo${hash(this.nombre)+distinto}\n nodo${hash(this)}->nodo${hash(this.expresion)+distinto}\n`
+        //console.log(cadena)
+        return cadena;
     }
 }
 

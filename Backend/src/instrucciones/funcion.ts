@@ -25,9 +25,12 @@ export class Funcion extends Instruccion {
         if(env.buscarMetodo(this.id)){
             throw instancia.addError(new Error("Semantico","El metodo "+this.id+" ya existe",this.line,this.column));
         }
-        console.log(this);
+        //console.log(this);
         env.guardar_metodo(this.id, this);
 
 
+    }
+    public graficar(env: Environment): string {
+        return "";
     }
 }

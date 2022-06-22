@@ -37,4 +37,8 @@ export class Dowhile extends Instruccion {
 
         
     }
+
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

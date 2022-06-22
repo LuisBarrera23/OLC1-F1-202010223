@@ -6,4 +6,6 @@ export abstract class Instruccion{
         this.column=column+1;
     }
     public abstract ejecutar(env: Environment):any
+
+    public abstract graficar(env: Environment):string
 }

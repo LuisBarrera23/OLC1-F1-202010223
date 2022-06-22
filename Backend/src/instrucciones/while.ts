@@ -42,4 +42,8 @@ export class While extends Instruccion {
 
         
     }
+
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

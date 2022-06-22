@@ -28,4 +28,8 @@ export class metodo extends Instruccion {
 
 
     }
+
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

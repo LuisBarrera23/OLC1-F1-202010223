@@ -18,4 +18,8 @@ export class Print extends Instruccion{
         const instancia=Singleton.getInstance();
         instancia.addConsola(String(exp.value));
     }
+
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

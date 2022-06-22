@@ -40,4 +40,8 @@ export class For extends Instruccion {
 
         
     }
+
+    public graficar(env: Environment): string {
+        return "";
+    }
 }

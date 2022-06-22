@@ -6,6 +6,9 @@ const analizador = require("../gramatica/gramatica");
 
 import { Symbol } from "../symbols/symbols"
 import { metodo } from "../instrucciones/metodo";
+import { Funcion } from "../instrucciones/funcion";
+import { Asignar } from "../instrucciones/asignar";
+let hash=require('object-hash')
 
 const singleton = Singleton.getInstance();
 let env_padre = new Environment(null);
@@ -30,7 +33,7 @@ class ApiController {
 
       for (const elemento of ast) {
         try {
-          if (elemento instanceof metodo) {
+          if (elemento instanceof metodo || elemento instanceof Funcion) {
             elemento.ejecutar(env_padre);
           }
         } catch (error) {
@@ -41,13 +44,24 @@ class ApiController {
 
       for (const elemento of ast) {
         try {
-          if (!(elemento instanceof metodo)) {
+          if (!(elemento instanceof metodo || elemento instanceof Funcion)) {
             elemento.ejecutar(env_padre);
           }
         } catch (error) {
           //console.log(error); 
         }
       }
+      let grafico="digraph G {\nrankdir=TB\nnode [shape=ellipse,fillcolor=green]\n";
+      let cadena=`nodo${hash(ast)}[style=filled, label="ASTPRINCIPAL"]\n`;
+      grafico+=cadena;
+      for (const elemento of ast) {
+        try {
+          grafico+=`nodo${hash(ast)}->nodo${hash(elemento)}\n`+elemento.graficar(env_padre);
+        } catch (error) {
+          //console.log(error); 
+        }
+      }
+      console.log(grafico+"\n}")
       //console.log(env_padre);
       console.log(singleton.getErrores());
 

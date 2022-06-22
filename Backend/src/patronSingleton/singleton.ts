@@ -3,6 +3,7 @@ import { Error } from "../objetos/error";
 export class Singleton{
     private static instance: Singleton;
     private consola:string="";
+    private grafica_ast="digraph G {\nrankdir=TB\nnode [shape=ellipse,fillcolor=green]";
     private errores:Error[]=[];
 
     constructor(){}
@@ -10,6 +11,7 @@ export class Singleton{
     public reset(){
         this.errores=[];
         this.consola="";
+        this.grafica_ast="digraph G {\nrankdir=TB\nnode [shape=ellipse,fillcolor=green]";
     }
 
     public static getInstance():Singleton{
@@ -33,5 +35,13 @@ export class Singleton{
 
     public getErrores():Error[]{
         return this.errores;
+    }
+
+    public add_graficaAST(dot:string){
+        this.grafica_ast+=dot;
+    }
+
+    public get_graficaAST():string{
+        return this.grafica_ast;
     }
 }

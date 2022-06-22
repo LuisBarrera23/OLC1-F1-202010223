@@ -27,13 +27,17 @@ export class Bloque extends Instruccion {
                     return x;
                 }
             } catch (error) {
-                console.log("------------------------------------------------")
+                console.log("Error------------------------------------------------")
                 console.log(elemento);
                 
             }
         }
 
         
+    }
+
+    public graficar(env: Environment): string {
+        return "";
     }
 
 }
