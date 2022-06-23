@@ -1,5 +1,6 @@
 import { Instruccion } from "../abstract/instruccion";
 import { Environment } from "../symbols/enviroment";
+let hash = require('object-hash')
 
 
 export class Break extends Instruccion {
@@ -11,13 +12,14 @@ export class Break extends Instruccion {
     }
 
     public ejecutar(env:Environment) {
-       console.log("gggggggggggggggggggggg")
         return this;
 
 
     }
 
     public graficar(env: Environment): string {
-        return "";
+        let cadena: string = "";
+        cadena += `nodo${hash(this)}[style=filled, label="Break"]\n`;
+        return cadena;
     }
 }

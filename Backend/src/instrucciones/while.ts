@@ -5,6 +5,7 @@ import { Environment } from "../symbols/enviroment";
 import { Type } from "../symbols/type";
 import { Error } from "../objetos/error";
 import { Break } from "./break";
+let hash=require('object-hash')
 
 export class While extends Instruccion {
     constructor(
@@ -44,6 +45,18 @@ export class While extends Instruccion {
     }
 
     public graficar(env: Environment): string {
-        return "";
+        const instancia=Singleton.getInstance();
+        
+        let cadena:string="";
+        let unico=this.line+"_"+this.column;
+        cadena+=`nodo${hash(this)}[style=filled, label="while"]\n`;
+        cadena+=`nodo${hash(this.condicion)}[style=filled, label="Expresion"]\n`;
+
+
+        cadena+=`nodo${hash(this)}->nodo${hash(this.condicion)}\n`
+        cadena+=`nodo${hash(this)}->nodo${hash(this.bloqueUnico)}\n`
+        cadena+=this.bloqueUnico.graficar(env);
+        //console.log(cadena)
+        return cadena;
     }
 }

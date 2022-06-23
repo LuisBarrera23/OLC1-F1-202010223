@@ -7,6 +7,7 @@ import { Environment } from "../symbols/enviroment";
 import { Funcion } from "./funcion";
 import { metodo } from "./metodo";
 import { Return } from "./return";
+let hash=require('object-hash');
 
 export class llamada extends Instruccion {
     constructor(
@@ -105,6 +106,18 @@ export class llamada extends Instruccion {
     }
 
     public graficar(env: Environment): string {
-        return "";
+        const instancia=Singleton.getInstance();
+        
+        let cadena:string="";
+        let unico=this.line+"_"+this.column;
+        cadena+=`nodo${hash(this)}[style=filled, label="Llamada"]\n`;
+        cadena+=`nodo${hash(this.id)+unico}[style=filled, label="${this.id}"]\n`;
+        cadena+=`nodo${hash(this)}->nodo${hash(this.id)+unico}\n`
+
+        if(!(this.parametros==undefined)){
+            cadena+=`nodo${hash(this.parametros)}[style=filled, label="Parametros"]\n`;
+            cadena+=`nodo${hash(this)}->nodo${hash(this.parametros)}\n`
+        }
+        return cadena;
     }
 }

@@ -1,6 +1,7 @@
 import { Expression } from "../abstract/expresion";
 import { Instruccion } from "../abstract/instruccion";
 import { Environment } from "../symbols/enviroment";
+let hash=require('object-hash');
 
 
 export class Return extends Instruccion {
@@ -17,6 +18,14 @@ export class Return extends Instruccion {
     }
 
     public graficar(env: Environment): string {
-        return "";
+        let cadena: string = "";
+        cadena += `nodo${hash(this)}[style=filled, label="Return"]\n`;
+
+        if(this.Exp!=null){
+            cadena += `nodo${hash(this.Exp)}[style=filled, label="Expresion"]\n`;
+            cadena+=`nodo${hash(this)}->nodo${hash(this.Exp)}\n`;
+        }
+        
+        return cadena;
     }
 }

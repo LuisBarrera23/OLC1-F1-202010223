@@ -4,6 +4,7 @@ import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
 import { Type } from "../symbols/type";
 import { Error } from "../objetos/error";
+let hash=require('object-hash');
 
 export class Sentencia_if extends Instruccion {
     constructor(
@@ -38,6 +39,38 @@ export class Sentencia_if extends Instruccion {
         
     }
     public graficar(env: Environment): string {
-        return "";
+        const instancia=Singleton.getInstance();
+        
+        let cadena:string="";
+        let unico=this.line+"_"+this.column;
+        cadena+=`nodo${hash(this)}[style=filled, label="Sentencia if"]\n`;
+        cadena+=`nodo${hash(this.condicion)}[style=filled, label="Condicion"]\n`;
+        cadena+=`nodo${hash(this)}->nodo${hash(this.condicion)}\n`
+
+        try {
+            console.log(this.bloque_verdadero);
+            console.log(this.bloque_falso);
+            if(this.bloque_verdadero!=null){
+                cadena+=`nodo${hash(this)}->nodo${hash(this.bloque_verdadero)}\n`
+                cadena+=this.bloque_verdadero.graficar(env);
+            }
+            if(this.bloque_falso!=undefined){
+                cadena+=`nodo${hash(this)}->nodo${hash(this.bloque_falso)}\n`
+                cadena+=this.bloque_falso.graficar(env);
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        
+        
+        
+
+
+        
+        
+        
+        //console.log(cadena)
+        return cadena;
     }
 }

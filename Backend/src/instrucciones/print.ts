@@ -2,6 +2,7 @@ import { Expression } from "../abstract/expresion";
 import { Instruccion } from "../abstract/instruccion";
 import { Singleton } from "../patronSingleton/singleton";
 import { Environment } from "../symbols/enviroment";
+let hash= require('object-hash');
 
 export class Print extends Instruccion{
     constructor(
@@ -20,6 +21,12 @@ export class Print extends Instruccion{
     }
 
     public graficar(env: Environment): string {
-        return "";
+        let distinto=this.line+"_"+this.column;
+        const instancia=Singleton.getInstance();
+        let cadena:string="";
+        cadena+=`nodo${hash(this)}[style=filled, label="Print"]\n`;
+        cadena+=`nodo${hash(this.expresion)+distinto}[style=filled, label="Expresion"]\n`
+        cadena+=`nodo${hash(this)}->nodo${hash(this.expresion)+distinto}\n`
+        return cadena;
     }
 }

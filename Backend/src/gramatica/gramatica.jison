@@ -337,7 +337,7 @@ WHILE: 'pr_while' '(' E ')' BLOQUE {$$=new While($3,$5,@1.first_line, @1.first_c
 FOR: 'pr_for' '(' INICIALIZACION ';' E ';' ACTUALIZACION ')' BLOQUE {$$=new For($3,$5,$7,$9,@1.first_line, @1.first_column);}
 ;
 
-INICIALIZACION: TIPODATO_DECLARACION 'id' '=' E {$$=new Declaracion($2,$1,$4,true,@1.first_line, @1.first_column);}
+INICIALIZACION: TIPODATO 'id' '=' E {$$=new Declaracion($2,$1,$4,true,@1.first_line, @1.first_column);}
             | 'id' '=' E {$$=new Asignar($1,$3,@1.first_line, @1.first_column);}
         ;
         
@@ -403,7 +403,7 @@ ELSE: 'pr_else' IF          {$$=$2;}
     ;
 
 BLOQUEIF: '{' INSTRUCCIONES '}'   {$$=new Bloque($2, @1.first_line, @1.first_column)}
-        | '{' '}' {}
+        | '{' '}' {$$=null}
     ;
 
 TIPO_DECLARACION:'pr_const' {$$=false}

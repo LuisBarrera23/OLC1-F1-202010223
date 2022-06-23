@@ -13,6 +13,9 @@
 </head>
 
 <body>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.13/dist/index.min.js"></script>
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
         </div>
@@ -77,9 +80,16 @@
                 style="width: 150px; margin-top: 10px; margin-bottom: 10px;">Guardar como</button>
 
             <div>
+                <label for="graph" class="fs-2" style="color: #000; padding-top: 10px;">Reporte Grafico AST</label>
+                <button onclick="verAST()" type="button" class="btn btn-danger"
+                    style="width: 150px;  margin-bottom: 10px; margin-left: 10px;">Ver AST</button>
+                <div id="graph" style="text-align: center;"></div>
+            </div>
+
+            <div>
                 <label for="t1" class="fs-2" style="color: #000; padding-top: 10px;">Reporte de errores</label>
                 <button onclick="verErrores()" type="button" class="btn btn-danger"
-                style="width: 150px;  margin-bottom: 10px; margin-left: 10px;">Ver Errores</button>
+                    style="width: 150px;  margin-bottom: 10px; margin-left: 10px;">Ver Errores</button>
                 <table id="t1" class="table table-dark table-hover">
                     <thead class="thead-dark">
                         <tr>
@@ -95,9 +105,10 @@
 
 
             <div>
-                <label for="t2" class="fs-2" style="color: #000; padding-top: 10px;">Reporte de Tabla de Simbolos</label>
+                <label for="t2" class="fs-2" style="color: #000; padding-top: 10px;">Reporte de Tabla de
+                    Simbolos</label>
                 <button onclick="verSimbolos()" type="button" class="btn btn-danger"
-                style="width: 150px;  margin-bottom: 10px; margin-left: 10px;">Ver Tabla de simbolos</button>
+                    style="width: 150px;  margin-bottom: 10px; margin-left: 10px;">Ver Tabla de simbolos</button>
                 <table id="t2" class="table table-dark table-hover">
                     <thead class="thead-dark">
                         <tr>
@@ -246,8 +257,8 @@
 
         function verErrores() {
             var tabla = document.querySelector("#tErrores")
-            var cadena="";
-            
+            var cadena = "";
+
             tabla.innerHTML = "";
             fetch('http://localhost:8080/errores', {
                 method: 'GET',
@@ -264,7 +275,7 @@
                 .then(response => {
                     //console.log(response)
                     response.forEach(element => {
-                    //console.log(element.tipo);
+                        //console.log(element.tipo);
                         cadena += `<tr>
                       <td>${element.tipo}</td>
                       <td>${element.descripcion}</td>
@@ -278,9 +289,9 @@
 
         function verSimbolos() {
             var tabla = document.querySelector("#tSimbolos")
-            var cadena="";
+            var cadena = "";
             tabla.innerHTML = "";
-            
+
             fetch('http://localhost:8080/simbolos', {
                 method: 'GET',
                 headers: {
@@ -296,20 +307,20 @@
                 .then(response => {
                     console.log(response)
                     response.forEach(element => {
-                    
-                        let tipo="";
-                        if(element.type==0){
-                            tipo="INT"
-                        }else if(element.type==1){
-                            tipo="DOUBLE"
-                        }else if(element.type==2){
-                            tipo="STRING"
-                        }else if(element.type==3){
-                            tipo="BOOLEAN"
-                        }else if(element.type==4){
-                            tipo="CHAR"
-                        }else if(element.type==5){
-                            tipo="ERROR"
+
+                        let tipo = "";
+                        if (element.type == 0) {
+                            tipo = "INT"
+                        } else if (element.type == 1) {
+                            tipo = "DOUBLE"
+                        } else if (element.type == 2) {
+                            tipo = "STRING"
+                        } else if (element.type == 3) {
+                            tipo = "BOOLEAN"
+                        } else if (element.type == 4) {
+                            tipo = "CHAR"
+                        } else if (element.type == 5) {
+                            tipo = "ERROR"
                         }
                         cadena += `<tr>
                       <td>${element.value}</td>
@@ -319,6 +330,26 @@
                       </tr>`;
                     });
                     tabla.innerHTML = cadena;
+                })
+        }
+
+        function verAST() {
+
+            fetch('http://localhost:8080/ast', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                }
+            })
+                .then(res => res.json())
+                .catch(err => {
+                    console.error('Error:', err)
+                    alert("Ocurrio un error, ver la consola")
+                })
+                .then(response => {
+                    console.log(response)
+                    d3.select("#graph").graphviz({useWorker: false}).renderDot(response.grafica);
                 })
         }
     </script>

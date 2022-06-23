@@ -12,6 +12,7 @@ let hash=require('object-hash')
 
 const singleton = Singleton.getInstance();
 let env_padre = new Environment(null);
+let ast:any;
 
 class ApiController {
   public async funcion1(req: Request, res: Response) {
@@ -26,7 +27,7 @@ class ApiController {
     try {
       let mensaje = req.body.entrada;
       singleton.reset();
-      let ast = analizador.parse(mensaje);
+      ast = analizador.parse(mensaje);
       env_padre = new Environment(null);
 
 
@@ -51,18 +52,6 @@ class ApiController {
           //console.log(error); 
         }
       }
-      let grafico="digraph G {\nrankdir=TB\nnode [shape=ellipse,fillcolor=green]\n";
-      let cadena=`nodo${hash(ast)}[style=filled, label="ASTPRINCIPAL"]\n`;
-      grafico+=cadena;
-      for (const elemento of ast) {
-        try {
-          grafico+=`nodo${hash(ast)}->nodo${hash(elemento)}\n`+elemento.graficar(env_padre);
-        } catch (error) {
-          //console.log(error); 
-        }
-      }
-      console.log(grafico+"\n}")
-      //console.log(env_padre);
       console.log(singleton.getErrores());
 
       res.json({ salida: singleton.getConsola() });
@@ -87,6 +76,27 @@ class ApiController {
       let simbolos: Symbol[] = env_padre.get_arregloSimbols();
       console.log(simbolos);
       res.json(simbolos);
+    } catch (error) {
+      res.status(400).send({ msg: "error en funcion 4" });
+    }
+  }
+
+  public async funcion5(req: Request, res: Response) {
+    try {
+      //recorrido para graficar ast
+      let grafico="digraph G {\nrankdir=TB\nnode [shape=ellipse,fillcolor=green]\n";
+      let cadena=`nodo${hash(ast)}[style=filled, label="ASTPRINCIPAL"]\n`;
+      grafico+=cadena;
+      for (const elemento of ast) {
+        try {
+          grafico+=`nodo${hash(ast)}->nodo${hash(elemento)}\n`+elemento.graficar(env_padre);
+        } catch (error) {
+          //console.log(error); 
+        }
+      }
+      grafico+="\n}";
+      console.log(grafico)
+      res.json({"grafica":grafico});
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 4" });
     }
