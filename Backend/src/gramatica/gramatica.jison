@@ -39,6 +39,13 @@
 
     const {Break}= require('../instrucciones/break');
     const {Return}= require('../instrucciones/return');
+
+    const {DeclaracionNV}= require('../instrucciones/declaracionNewVector');
+    const {DeclaracionV}= require('../instrucciones/declaracionVector');
+    const {Tochar}= require('../instrucciones/tochararray');
+    const {ModificarVector}= require('../instrucciones/modificarVector');
+
+    const {AccesoVector}=require('../expresiones/accesoVector');
 %}
 
 %lex
@@ -144,7 +151,16 @@
 "fun"         {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_fun';
-                } 
+                }
+
+"New"           {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_new';
+                }
+"tochararray"           {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_tochar';
+                }
      
  
 
@@ -177,6 +193,14 @@
 ")"             {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return ')';
+                } 
+"["             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '[';
+                } 
+"]"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return ']';
                 } 
 
 "++"            {
@@ -307,25 +331,54 @@ INSTRUCCIONES :INSTRUCCIONES INSTRUCCION {$1.push($2); $$=$1;}
               ;
 
 
-INSTRUCCION : DECLARACION   {$$=$1;}
-            | ASIGNACION    {$$=$1;}
-            | FUNCION       {$$=$1;}
-            | BLOQUE        {$$=$1;}
-            | PRINT         {$$=$1;}
-            | PRINTLN       {$$=$1;}
-            | LLAMADA       {$$=$1;}
-            | METODO        {$$=$1;}
-            | IF            {$$=$1;}
-            | WHILE         {$$=$1;}
-            | DOWHILE       {$$=$1;}
-            | FOR           {$$=$1;}
-            | BREAK         {$$=$1;}
-            | RETURN         {$$=$1;}
-            | MOD ';'          {$$=$1;}
+INSTRUCCION : DECLARACION                   {$$=$1;}
+            | ASIGNACION                    {$$=$1;}
+            | FUNCION                       {$$=$1;}
+            | BLOQUE                        {$$=$1;}
+            | PRINT                         {$$=$1;}
+            | PRINTLN                       {$$=$1;}
+            | LLAMADA                       {$$=$1;}
+            | METODO                        {$$=$1;}
+            | IF                            {$$=$1;}
+            | WHILE                         {$$=$1;}
+            | DOWHILE                       {$$=$1;}
+            | FOR                           {$$=$1;}
+            | BREAK                         {$$=$1;}
+            | RETURN                        {$$=$1;}
+            | MOD ';'                       {$$=$1;}
+            | DECLARACIONNEWVECTOR          {$$=$1;}
+            | DECLARACIONVECTOR             {$$=$1;}
+            | MODIFICACIONVECTOR              {$$=$1;}
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
+
+DECLARACIONNEWVECTOR: TIPODATO 'id' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' ';' {$$=new DeclaracionNV($2,$1,$7,$9,null,true,1,@1.first_line,@1.first_column)}
+                    | 'pr_const' TIPODATO 'id' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' ';' {$$=new DeclaracionNV($3,$2,$8,$10,null,false,1,@1.first_line,@1.first_column)}
+                    | TIPODATO 'id' '[' ']' '=' 'pr_tochar' '(' E ')' ';' {$$=new Tochar($2,$1,$8,true,@1.first_line,@1.first_column)}
+                    | 'pr_const' TIPODATO 'id' '[' ']' '=' 'pr_tochar' '(' E ')' ';' {$$=new Tochar($3,$2,$9,false,@1.first_line,@1.first_column)}
+                    | TIPODATO 'id' '[' ']' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' '[' E ']' ';' {$$=new DeclaracionNV($2,$1,$9,$11,$14,true,2,@1.first_line,@1.first_column)}
+                    | 'pr_const' TIPODATO 'id' '[' ']' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' '[' E ']' ';' {$$=new DeclaracionNV($3,$2,$10,$12,$15,false,2,@1.first_line,@1.first_column)}
+                    ;
+
+DECLARACIONVECTOR:TIPODATO 'id' '[' ']' '=' '[' EXPRESIONES ']' ';' {$$=new DeclaracionV($2,$1,$7,true,1,@1.first_line,@1.first_column);}
+                |'pr_const' TIPODATO 'id' '[' ']' '=' '[' EXPRESIONES ']' ';' {$$=new DeclaracionV($3,$2,$8,false,1,@1.first_line,@1.first_column);}
+                | TIPODATO 'id' '[' ']' '[' ']' '=' '[' EXPRESIONES2 ']' ';' {$$=new DeclaracionV($2,$1,$9,true,2,@1.first_line,@1.first_column);}
+                | 'pr_const' TIPODATO 'id' '[' ']' '[' ']' '=' '[' EXPRESIONES2 ']' ';' {$$=new DeclaracionV($3,$2,$10,false,2,@1.first_line,@1.first_column);}
+;
+
+EXPRESIONES2: '[' EXPRESIONES  ']' ',' EXPRESIONES2    {$5.unshift($2); $$=$5;}
+            |'[' EXPRESIONES  ']'         {$$=[$2]}
+            ;
+
+EXPRESIONES: E ',' EXPRESIONES    {$3.unshift($1); $$=$3;}
+            |E           {$$=[$1]}
+            ;
+
+MODIFICACIONVECTOR: 'id' '[' E ']' '=' E ';'            {$$=new ModificarVector($1,$3,null,$6,1,@1.first_line, @1.first_column)}
+                | 'id' '[' E ']' '[' E ']' '=' E ';'    {$$=new ModificarVector($1,$3,$6,$9,2,@1.first_line, @1.first_column)}
+;
 
 BREAK: 'pr_break' ';' {$$=new Break(@1.first_line, @1.first_column);};
 
@@ -410,7 +463,7 @@ TIPO_DECLARACION:'pr_const' {$$=false}
                 | {$$=true}
                 ; 
 
-DECLARACION : 'pr_const' TIPODATO IDS '=' E ';' {$$=new Declaracion($3,$2,$5,true,@1.first_line, @1.first_column);}
+DECLARACION : 'pr_const' TIPODATO IDS '=' E ';' {$$=new Declaracion($3,$2,$5,false,@1.first_line, @1.first_column);}
             | TIPODATO IDS '=' E ';' {$$=new Declaracion($2,$1,$4,true,@1.first_line, @1.first_column);}
         ;
 
@@ -458,12 +511,14 @@ E: '-' E %prec UMENOS      {$$=new Arithmetic($2,$2,ArithmeticOption.NEGACION, @
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
 | 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}
+| 'id' '[' E ']' {$$=new AccesoVector($1,$3,null,1,@1.first_line, @1.first_column);}
+| 'id' '[' E ']' '[' E ']' {$$=new AccesoVector($1,$3,$6,2,@1.first_line, @1.first_column);}
 | 'id' '(' LLPARAMETROS ')' {$$=new llamadaF($1,$3,@1.first_line, @1.first_column);}
 ;
 
-F:'tk_entero'       {$$=new Literal($1,Type.NUMBER, @1.first_line, @1.first_column)}
-    |'tk_decimal'   {$$=new Literal($1,Type.DOUBLE, @1.first_line, @1.first_column)}
-    |'tk_cadena'    {$$=new Literal($1,Type.STRING, @1.first_line, @1.first_column)}
-    |'tk_caracter'  {$$=new Literal($1,Type.CHAR, @1.first_line, @1.first_column)}
-    |'tk_booleano'  {$$=new Literal($1,Type.BOOLEAN, @1.first_line, @1.first_column)}
+F:'tk_entero'   {$$=new Literal($1,Type.NUMBER, @1.first_line, @1.first_column)}
+|'tk_decimal'   {$$=new Literal($1,Type.DOUBLE, @1.first_line, @1.first_column)}
+|'tk_cadena'    {$$=new Literal($1,Type.STRING, @1.first_line, @1.first_column)}
+|'tk_caracter'  {$$=new Literal($1,Type.CHAR, @1.first_line, @1.first_column)}
+|'tk_booleano'  {$$=new Literal($1,Type.BOOLEAN, @1.first_line, @1.first_column)}
 ;

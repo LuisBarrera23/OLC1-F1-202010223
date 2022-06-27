@@ -21,14 +21,14 @@ export class Declaracion extends Instruccion {
 
     public ejecutar(env: Environment) {
         //analisis semantico
-        console.log("Declarando nueva variable " + this.nombre+","+this.tipo);
+        //console.log("Declarando nueva variable " + this.nombre+","+this.tipo);
         const instancia=Singleton.getInstance()
-        console.log(this.expresion);
+        //console.log(this.expresion);
         const expresion = this.expresion.ejecutar(env);
         if(expresion.type==Type.error){
             throw instancia.addError(new Error("Semantico","La variable "+this.nombre+" tiene una expresion no valida",this.line+1,this.column+1));
         }
-        console.log(expresion);
+        //console.log(expresion);
         let nombres: string[] = String(this.nombre).split(",");
         for (let n of nombres) {
             if (env.buscarVariable(n)) {

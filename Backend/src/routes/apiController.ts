@@ -52,7 +52,8 @@ class ApiController {
           //console.log(error); 
         }
       }
-      console.log(singleton.getErrores());
+      //console.log(singleton.getErrores());
+      console.log(env_padre.vertablasimbolos_vectores())
 
       res.json({ salida: singleton.getConsola() });
     } catch (error) {
@@ -95,7 +96,7 @@ class ApiController {
         }
       }
       grafico+="\n}";
-      console.log(grafico)
+      //console.log(grafico)
       res.json({"grafica":grafico});
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 4" });
