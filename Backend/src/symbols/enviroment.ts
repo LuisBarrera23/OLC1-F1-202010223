@@ -71,6 +71,45 @@ export class Environment {
         
     }
 
+    public pushVector(nombre: string,nuevoValor: any) {
+        let env: Environment | null = this;
+        while (env != null) {
+            for (let entry of Array.from(env.tabladesimbolos_vectores.entries())) {
+                if (entry[0] == nombre){
+                    entry[1].value.push(nuevoValor);
+                } 
+            }
+            env=env.anterior;
+        }
+        
+    }
+
+    public spliceVector(nombre: string,index:number,nuevoValor: any) {
+        let env: Environment | null = this;
+        while (env != null) {
+            for (let entry of Array.from(env.tabladesimbolos_vectores.entries())) {
+                if (entry[0] == nombre){
+                    entry[1].value.splice(index,0,nuevoValor);
+                } 
+            }
+            env=env.anterior;
+        }
+        
+    }
+
+    public popVector(nombre: string) {
+        let env: Environment | null = this;
+        while (env != null) {
+            for (let entry of Array.from(env.tabladesimbolos_vectores.entries())) {
+                if (entry[0] == nombre){
+                    entry[1].value.pop();
+                } 
+            }
+            env=env.anterior;
+        }
+        
+    }
+
 
 
 

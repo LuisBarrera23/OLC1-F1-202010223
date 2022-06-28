@@ -24,7 +24,7 @@ export class DeclaracionNV extends Instruccion {
 
     public ejecutar(env: Environment) {
         //analisis semantico
-        console.log("Declarando vector " + this.nombre);
+        //console.log("Declarando vector " + this.nombre);
         const instancia=Singleton.getInstance()
         if(env.buscarVector(this.nombre)){
             throw instancia.addError(new Error("Semantico","El vector con id "+this.nombre+" ya existe en esta tabla de simbolos",this.line,this.column+1));

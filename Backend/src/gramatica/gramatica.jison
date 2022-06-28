@@ -44,8 +44,15 @@
     const {DeclaracionV}= require('../instrucciones/declaracionVector');
     const {Tochar}= require('../instrucciones/tochararray');
     const {ModificarVector}= require('../instrucciones/modificarVector');
+    const {Pop}= require('../instrucciones/pop');
+    const {Splice}= require('../instrucciones/splice');
+    const {Ternarioi}= require('../instrucciones/ternarioi');
 
     const {AccesoVector}=require('../expresiones/accesoVector');
+    const {Length}=require('../expresiones/length');
+    const {Indexof}=require('../expresiones/indexof');
+    const {Push}=require('../expresiones/push');
+    const {TernarioE}=require('../expresiones/ternarioE');
 %}
 
 %lex
@@ -157,10 +164,30 @@
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_new';
                 }
-"tochararray"           {
+"tochararray"   {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return 'pr_tochar';
                 }
+"length"        {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_length';
+                } 
+"indexof"       {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_indexof';
+                } 
+"push"          {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_push';
+                }
+"pop"          {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_pop';
+                } 
+"splice"          {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return 'pr_splice';
+                } 
      
  
 
@@ -173,11 +200,19 @@
 ","             {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return ',';
+                }
+"."             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '.';
                 } 
 ":"             {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return ':';
-                } 
+                }
+"?"             {
+                    console.log("el lexema encontrado es :"+ yytext); 
+                    return '?';
+                }  
 "{"             {
                     console.log("el lexema encontrado es :"+ yytext); 
                     return '{';
@@ -348,10 +383,23 @@ INSTRUCCION : DECLARACION                   {$$=$1;}
             | MOD ';'                       {$$=$1;}
             | DECLARACIONNEWVECTOR          {$$=$1;}
             | DECLARACIONVECTOR             {$$=$1;}
-            | MODIFICACIONVECTOR              {$$=$1;}
+            | PUSH                          {$$=$1;}
+            | POP                           {$$=$1;}
+            | SPLICE                        {$$=$1;}
+            | MODIFICACIONVECTOR            {$$=$1;}
+            | TERNARIO                      {$$=$1;}
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
+            ;
+
+TERNARIO: E '?' INSTRUCCIONT ':' INSTRUCCIONT ';' {$$=new Ternarioi($1,$3,$5,@1.first_line,@1.first_column);};
+
+INSTRUCCIONT: ASIGNACION2                   {$$=$1;}
+            | PRINT2                        {$$=$1;}
+            | PRINTLN2                      {$$=$1;}
+            | LLAMADA2                      {$$=$1;}
+            | MOD                           {$$=$1;}
             ;
 
 DECLARACIONNEWVECTOR: TIPODATO 'id' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' ';' {$$=new DeclaracionNV($2,$1,$7,$9,null,true,1,@1.first_line,@1.first_column)}
@@ -380,6 +428,15 @@ MODIFICACIONVECTOR: 'id' '[' E ']' '=' E ';'            {$$=new ModificarVector(
                 | 'id' '[' E ']' '[' E ']' '=' E ';'    {$$=new ModificarVector($1,$3,$6,$9,2,@1.first_line, @1.first_column)}
 ;
 
+PUSH:'id' '.' 'pr_push' '(' E ')' ';' {$$=new Push($1,$5,@1.first_line, @1.first_column);}
+;
+
+POP: 'id' '.' 'pr_pop' '(' ')' ';' {$$=new Pop($1,@1.first_line, @1.first_column);}
+;
+
+SPLICE: 'id' '.' 'pr_splice' '(' E ',' E ')' ';' {$$=new Splice($1,$5,$7,@1.first_line, @1.first_column);}
+;
+
 BREAK: 'pr_break' ';' {$$=new Break(@1.first_line, @1.first_column);};
 
 RETURN: 'pr_return' ';' {$$=new Return(null,@1.first_line, @1.first_column);}
@@ -403,6 +460,9 @@ DOWHILE: 'pr_do' BLOQUE 'pr_while' '(' E ')' ';' {$$=new Dowhile($5,$2,@1.first_
 ;
 
 LLAMADA: 'pr_call' 'id' '(' LLPARAMETROS ')' ';' {$$=new llamada($2,$4,@1.first_line, @1.first_column)}
+;
+
+LLAMADA2: 'pr_call' 'id' '(' LLPARAMETROS ')'  {$$=new llamada($2,$4,@1.first_line, @1.first_column)}
 ;
 
 LLPARAMETROS: LLPARAMETRO ',' LLPARAMETROS  {$3.unshift($1); $$=$3;}
@@ -445,6 +505,12 @@ PRINT: 'pr_print' '(' E ')' ';' {$$=new Print($3,@1.first_line, @1.first_column)
 PRINTLN: 'pr_println' '(' E ')' ';' {$$=new Println($3,@1.first_line, @1.first_column);}
     ;
 
+PRINT2: 'pr_print' '(' E ')'  {$$=new Print($3,@1.first_line, @1.first_column);}
+    ;
+
+PRINTLN2: 'pr_println' '(' E ')'  {$$=new Println($3,@1.first_line, @1.first_column);}
+    ;
+
 IF: 'pr_if' '(' E ')' BLOQUEIF ELSE       {$$=new Sentencia_if($3,$5,$6,@1.first_line, @1.first_column);}
     | 'pr_if' '(' E ')' INSTRUCCION ELSE    {$$=new Sentencia_if($3,$5,$6,@1.first_line, @1.first_column);}
 ;
@@ -474,13 +540,21 @@ ASIGNACION: 'id' '=' E ';'
         }
         ;
 
+ASIGNACION2: 'id' '=' E 
+        {
+            $$=new Asignar($1,$3,@1.first_line, @1.first_column);
+        }
+        ;
+
 
 
 IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
     |'id'           {$$=[$1]}
     ;
 
-TYPEOF: 'pr_typeof' '(' E ')' {$$=$3};
+TYPEOF: 'pr_typeof' '(' E ')' {$$=$3;};
+
+LENGTH: 'pr_length' '(' E ')' {$$=$3;};
     
 MOD: '++' E   {$$=new Modificador($2,modificadorOption.INCREIZQUIERDA,@1.first_line, @1.first_column);}
     | E '++'  {$$=new Modificador($1,modificadorOption.INCREDERECHA,@1.first_line, @1.first_column);}
@@ -508,9 +582,13 @@ E: '-' E %prec UMENOS      {$$=new Arithmetic($2,$2,ArithmeticOption.NEGACION, @
 |  '!' E        {$$= new Logica($2,$2,logicaOption.NOT, @1.first_line, @1.first_column);}
 | MOD           {$$=$1;}
 |  TYPEOF       {$$= new Typof($1,@1.first_line, @1.first_column);}
+|  LENGTH       {$$=new Length($1,@1.first_line, @1.first_column);}
 |  '(' E ')'    {$$=$2}
 |  F            {$$=$1;}
 | 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);}
+| 'id' '.' 'pr_indexof' '(' E ')' {$$=new Indexof($1,$5,@1.first_line, @1.first_column);}
+| 'id' '.' 'pr_push' '(' E ')' {$$=new Push($1,$5,@1.first_line, @1.first_column);}
+|  E '?' E ':' E  {$$=new TernarioE($1,$3,$5, @1.first_line, @1.first_column);}
 | 'id' '[' E ']' {$$=new AccesoVector($1,$3,null,1,@1.first_line, @1.first_column);}
 | 'id' '[' E ']' '[' E ']' {$$=new AccesoVector($1,$3,$6,2,@1.first_line, @1.first_column);}
 | 'id' '(' LLPARAMETROS ')' {$$=new llamadaF($1,$3,@1.first_line, @1.first_column);}
