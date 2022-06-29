@@ -24,7 +24,7 @@ export class Modificador extends Expression{
         }
         const instancia=Singleton.getInstance();
         if(this.id instanceof Acceso){
-            console.log("si es instancia")
+            //console.log("si es instancia")
         }else{
             throw instancia.addError(new Error("Semantico","Incremento y decremento unicamente para identificadores",this.line,this.column));
         }

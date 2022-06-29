@@ -195,11 +195,104 @@ export class Environment {
         return simbolos;
     }
 
-    // public mostraranteriores() {
-    //     // let env: any = this;
-    //     // do {
-    //     //     console.log(env);
-    //     //     env = env.anterior;
-    //     // } while (env != null);
-    // }
+
+
+    public graficarts():string{
+        let cadena:string="";
+        let env: Environment | null = this;
+        cadena="[label=<<table border=\"0\" cellborder=\"1\" cellspacing=\"0\" width=\"100%\" height=\"100%\">\n";
+        
+        let contador:number=0;
+        while (env != null) {
+            cadena+=`<tr><td colspan="4">NIVEL ${contador}</td></tr>\n`
+            cadena+=`<tr>
+                <td>VALOR</td>
+                <td>NOMBRE</td>
+                <td>TIPO</td>
+                <td>EDITABLE</td>
+                </tr>\n`
+            contador++;
+            
+            
+            for (let entry of Array.from(env.tabladesimbolos.entries())) {
+                let variable:Symbol=entry[1];
+                cadena+=`<tr>
+                    <td>${variable.value}</td>
+                    <td>${variable.id}</td>
+                    <td>${this.strtipo(variable.type)}</td>
+                    <td>${variable.editable}</td>
+                    </tr>\n`
+            }
+
+            for (let entry of Array.from(env.tabladesimbolos_vectores.entries())) {
+                let variable:Symbol_array=entry[1];
+                cadena+=`<tr>
+                    <td>${this.graficarvector(variable,variable.dimension)}</td>
+                    <td>${variable.id}</td>
+                    <td>${this.strtipo(variable.type)}</td>
+                    <td>${variable.editable}</td>
+                    </tr>\n`
+            }
+            
+            env = env.anterior;
+        }
+        cadena+=`</table>>];\n`
+        //console.log(cadena);
+        return cadena;
+    }
+
+    public graficarvector(arreglo:Symbol_array,dimension:number):string{
+        let estructura:string="";
+        if(dimension==1){
+            estructura="[";
+            let array:any[]=arreglo.value;
+            let largo=array.length;
+            for (let i = 0; i < array.length; i++) {
+                if(i==largo-1){
+                    estructura+=String(array[i]);
+                }else{
+                    estructura+=String(array[i])+",";
+                }
+                
+            }
+            estructura+="]";
+        }else if(dimension==2){
+            estructura+="["
+            let array:any[][]=arreglo.value;
+            for (let j = 0; j < array.length; j++) {
+                let largo=array[j].length;
+                estructura+="["
+                for (let i = 0; i < largo; i++) {
+                    if(i==largo-1){
+                        estructura+=String(array[j][i]);
+                    }else{
+                        estructura+=String(array[j][i])+",";
+                    }
+                }
+                if(j==array.length-1){
+                    estructura+="]]"
+                }else{
+                    estructura+="],"
+                }
+                
+            }
+        }
+        return estructura;
+    }
+
+    public strtipo(type:Type):string{
+        let strtipo="";
+        if(type==Type.NUMBER){
+            strtipo="INT";
+        }else if(type==Type.DOUBLE){
+            strtipo="DOUBLE";
+        }else if(type==Type.STRING){
+            strtipo="STRING";
+        }else if(type==Type.CHAR){
+            strtipo="CHAR";
+        }else if(type==Type.BOOLEAN){
+            strtipo="BOOLEAN";
+        }
+        return strtipo;
+    }
 }

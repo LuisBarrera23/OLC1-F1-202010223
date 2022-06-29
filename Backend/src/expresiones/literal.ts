@@ -30,7 +30,7 @@ export class Literal extends Expression{
             if (this.value == "true") return { value: Boolean(true), type: Type.BOOLEAN }
             else return { value: Boolean(false), type: Type.BOOLEAN }
         }else if(this.type==Type.CHAR){
-            this.value = (this.value).slice(1,this.value.length-1);
+            this.value = (this.value).replaceAll("'","");
             this.value = (this.value).replaceAll("\\n","\n");
             this.value = (this.value).replaceAll("\\t","\t");
             return { value: this.value, type: Type.CHAR }

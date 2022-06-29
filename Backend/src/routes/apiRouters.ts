@@ -15,6 +15,7 @@ class ApiRoutes {
     this.router.get("/errores", apiController.funcion3);
     this.router.get("/simbolos", apiController.funcion4);
     this.router.get("/ast",apiController.funcion5);
+    this.router.get("/graficarts",apiController.funcion6);
   }
 }
 

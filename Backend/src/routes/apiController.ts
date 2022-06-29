@@ -53,7 +53,7 @@ class ApiController {
         }
       }
       //console.log(singleton.getErrores());
-      console.log(env_padre.vertablasimbolos_vectores())
+      //console.log(env_padre.vertablasimbolos_vectores())
 
       res.json({ salida: singleton.getConsola() });
     } catch (error) {
@@ -75,7 +75,7 @@ class ApiController {
   public async funcion4(req: Request, res: Response) {
     try {
       let simbolos: Symbol[] = env_padre.get_arregloSimbols();
-      console.log(simbolos);
+      //console.log(simbolos);
       res.json(simbolos);
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 4" });
@@ -97,6 +97,16 @@ class ApiController {
       }
       grafico+="\n}";
       //console.log(grafico)
+      res.json({"grafica":grafico});
+    } catch (error) {
+      res.status(400).send({ msg: "error en funcion 4" });
+    }
+  }
+
+  public async funcion6(req: Request, res: Response) {
+    try {
+      const instancia=Singleton.getInstance();
+      let grafico:string=instancia.get_graficasts();
       res.json({"grafica":grafico});
     } catch (error) {
       res.status(400).send({ msg: "error en funcion 4" });

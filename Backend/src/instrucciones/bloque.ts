@@ -28,8 +28,8 @@ export class Bloque extends Instruccion {
                     return x;
                 }
             } catch (error) {
-                console.log("Error------------------------------------------------")
-                console.log(elemento);
+                //console.log("Error------------------------------------------------")
+                //console.log(elemento);
 
             }
         }
