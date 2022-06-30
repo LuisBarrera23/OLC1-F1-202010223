@@ -1,70 +1,90 @@
 
-
 %lex
 %options case-insensitive
 %%
 
 // datos primitivos
-[0-9]+("."[0-9]+)    
-[0-9]+                  
-[\"]("\\""\""|[^"])*[\"]    
-[\']([^']|"\\n"|"\\t"|(\\)(\\))?[\'] 
-"true"|"false"             
+[0-9]+("."[0-9]+)
+[0-9]+  
+[\"]("\\""\""|[^"])*[\"]
+[\']([^']|"\\n"|"\\t"|(\\)(\\))?[\']
+"true"|"false"
 
 // palabras reservadas
-"int"              
-"String"        
-"boolean"           
-"double"           
-"char"               
-"const"         
-"Print"          
-"Println"       
-"typeof"       
-"if"            
-"else"           
-"void"            
-"call"             
-"while"         
-"do"            
-"for"            
+"int"    
+"String"
+"boolean"   
+"double"   
+"char"     
+"const"
+"Print" 
+"Println"
+"typeof"
+"if"
+"else"
+"void" 
+"call"  
+"while"
+"do" 
+"for" 
 
-"break"          
+"break" 
+"return" 
+"fun"
+
+"New"
+"tochararray"
+"length" 
+"indexof"
+"push"
+"pop" 
+"splice"
+"tolower" 
+"toupper" 
+"round"  
+
+"graficar_ts"
      
  
 
 // reconocimiento de simbolos
 
-";"             
-","              
-":"              
-"{"              
-"}"              
-"("              
-")"              
+";"
+","
+"." 
+":"
+"?" 
+"{"
+"}" 
+"("
+")" 
+"[" 
+"]"
 
-"++"            
-"+"             
-"--"             
-"-"               
-"**"             
-"*"             
-"//".*          
+"++" 
+"+" 
+"--"
+"-" 
+"**" 
+"*"
+"//".*          {
+                    //console.log("comentario de una linea")
+                }
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     {} // comentario multiple línea
-"/"              
-"%"              
+"/"
+"%" 
 
-"=="             
-"="              
-"!="             
-">="            
-"<="            
-">"             
-"<"             
-"||"             
-"&&"             
-"^"              
-"!"              
+"==" 
+"="
+"!="
+">=" 
+"<=" 
+">"
+"<"
+"||"
+"&&" 
+"^" 
+"!"
 
 [a-zA-ZñÑ][a-zA-Z0-9_ñÑ]*	
 
@@ -77,7 +97,11 @@
 
 <<EOF>>		            return 'EOF'
 
-.   
+.   { 
+        //console.log("error lexico:"+yytext+ " fila: "+yylloc.first_line+" columna: "+yylloc.first_column);
+        instancia.addError(new Error("Lexico","lexema: "+yytext+" no coincide con ningun patrón",yylloc.first_line,yylloc.first_column+1));
+        //push para array errores
+    }
 
 /lex 
 %left '||'
@@ -96,57 +120,120 @@
 
 %%
 
-INIT: INSTRUCCIONES    EOF  {return $1}
+INIT: INSTRUCCIONES    EOF  
     | EOF {};
 
 
-INSTRUCCIONES :INSTRUCCIONES INSTRUCCION {$1.push($2); $$=$1;}
-              | INSTRUCCION {$$=[$1];}
+INSTRUCCIONES :INSTRUCCIONES INSTRUCCION
+              | INSTRUCCION
               ;
 
 
-INSTRUCCION : DECLARACION   {$$=$1;}
-            | ASIGNACION    {$$=$1;}
-            | BLOQUE        {$$=$1;}
-            | PRINT         {$$=$1;}
-            | PRINTLN       {$$=$1;}
-            | LLAMADA       {$$=$1;}
-            | METODO        {$$=$1;}
-            | IF            {$$=$1;}
-            | WHILE         {$$=$1;}
-            | DOWHILE       {$$=$1;}
-            | FOR           {$$=$1;}
-            | BREAK         {$$=$1;}
-            | MOD ';'          {$$=$1;}
+INSTRUCCION : DECLARACION                   
+            | ASIGNACION                    
+            | FUNCION                       
+            | BLOQUE                        
+            | PRINT                         
+            | PRINTLN                       
+            | LLAMADA                       
+            | METODO                        
+            | IF                            
+            | WHILE                         
+            | DOWHILE                       
+            | FOR                           
+            | BREAK                         
+            | RETURN                        
+            | MOD ';'                       
+            | DECLARACIONNEWVECTOR          
+            | DECLARACIONVECTOR             
+            | PUSH                          
+            | POP                           
+            | SPLICE                        
+            | MODIFICACIONVECTOR            
+            | TERNARIO                      
+            | GRAFICARTS                    
             | error    ';'  { 
                 instancia.addError(new Error("Sintactico","Error en produccion de gramatica",@1.first_line,@1.first_column));
                 }
             ;
 
-BREAK: 'pr_break' ';' {$$=new Break(@1.first_line, @1.first_column);};
-
-WHILE: 'pr_while' '(' E ')' BLOQUE {$$=new While($3,$5,@1.first_line, @1.first_column);};
-
-FOR: 'pr_for' '(' INICIALIZACION ';' E ';' ACTUALIZACION ')' BLOQUE {$$=new For($3,$5,$7,$9,@1.first_line, @1.first_column);}
+GRAFICARTS: 'pr_graficarts' '(' ')' ';' 
 ;
 
-INICIALIZACION: TIPODATO_DECLARACION 'id' '=' E {$$=new Declaracion($2,$1,$4,true,@1.first_line, @1.first_column);}
-            | 'id' '=' E {$$=new Asignar($1,$3,@1.first_line, @1.first_column);}
+TERNARIO: E '?' INSTRUCCIONT ':' INSTRUCCIONT ';'
+
+INSTRUCCIONT: ASIGNACION2                   
+            | PRINT2                        
+            | PRINTLN2                      
+            | LLAMADA2                      
+            | MOD                           
+            ;
+
+DECLARACIONNEWVECTOR: TIPODATO 'id' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' ';' 
+                    | 'pr_const' TIPODATO 'id' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' ';' 
+                    | TIPODATO 'id' '[' ']' '=' 'pr_tochar' '(' E ')' ';' 
+                    | 'pr_const' TIPODATO 'id' '[' ']' '=' 'pr_tochar' '(' E ')' ';' 
+                    | TIPODATO 'id' '[' ']' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' '[' E ']' ';'
+                    | 'pr_const' TIPODATO 'id' '[' ']' '[' ']' '=' 'pr_new' TIPODATO '[' E ']' '[' E ']' ';'
+                    ;
+
+DECLARACIONVECTOR:TIPODATO 'id' '[' ']' '=' '[' EXPRESIONES ']' ';' 
+                |'pr_const' TIPODATO 'id' '[' ']' '=' '[' EXPRESIONES ']' ';'
+                | TIPODATO 'id' '[' ']' '[' ']' '=' '[' EXPRESIONES2 ']' ';'
+                | 'pr_const' TIPODATO 'id' '[' ']' '[' ']' '=' '[' EXPRESIONES2 ']' ';' 
+;
+
+EXPRESIONES2: '[' EXPRESIONES  ']' ',' EXPRESIONES2    
+            |'[' EXPRESIONES  ']'       
+            ;
+
+EXPRESIONES: E ',' EXPRESIONES    
+            |E          
+            ;
+
+MODIFICACIONVECTOR: 'id' '[' E ']' '=' E ';'            
+                | 'id' '[' E ']' '[' E ']' '=' E ';'    
+;
+
+PUSH:'id' '.' 'pr_push' '(' E ')' ';' 
+;
+
+POP: 'id' '.' 'pr_pop' '(' ')' ';' 
+;
+
+SPLICE: 'id' '.' 'pr_splice' '(' E ',' E ')' ';' 
+;
+
+BREAK: 'pr_break' ';'
+
+RETURN: 'pr_return' ';'
+        | 'pr_return' E ';' 
+
+WHILE: 'pr_while' '(' E ')' BLOQUE 
+
+FOR: 'pr_for' '(' INICIALIZACION ';' E ';' ACTUALIZACION ')' BLOQUE 
+;
+
+INICIALIZACION: TIPODATO 'id' '=' E 
+            | 'id' '=' E 
         ;
         
-ACTUALIZACION: 'id' '=' E {$$=new Asignar($1,$3,@1.first_line, @1.first_column);}
-            | MOD {$$=$1;}
+ACTUALIZACION: 'id' '=' E 
+            | MOD 
             ;
 
 
-DOWHILE: 'pr_do' BLOQUE 'pr_while' '(' E ')' ';' {$$=new Dowhile($5,$2,@1.first_line, @1.first_column)}
+DOWHILE: 'pr_do' BLOQUE 'pr_while' '(' E ')' ';' 
 ;
 
-LLAMADA: 'pr_call' 'id' '(' LLPARAMETROS ')' ';' {$$=new llamada($2,$4,@1.first_line, @1.first_column)}
+LLAMADA: 'pr_call' 'id' '(' LLPARAMETROS ')' ';' 
 ;
 
-LLPARAMETROS: LLPARAMETRO ',' LLPARAMETROS  {$3.unshift($1); $$=$3;}
-            | LLPARAMETRO {$$=[$1];}
+LLAMADA2: 'pr_call' 'id' '(' LLPARAMETROS ')'  
+;
+
+LLPARAMETROS: LLPARAMETRO ',' LLPARAMETROS  
+            | LLPARAMETRO 
             |
             ;
 
@@ -154,18 +241,28 @@ LLPARAMETRO: E {$$=$1}
             ;
 
 METODO: 'pr_void' 'id' '(' PARAMETROS ')' BLOQUE 
+;
+
+FUNCION:  TIPODATO 'id' '(' PARAMETROS ')' BLOQUE 
+
+TIPODATO:'pr_int'       
+        |'pr_string'    
+        |'pr_bool'      
+        |'pr_double'    
+        |'pr_char'      
+        ; 
 
 PARAMETROS :PARAMETRO ',' PARAMETROS  
             | PARAMETRO 
             | 
             ;
 PARAMETRO:'pr_int' 'id'        
-            |'pr_string' 'id'   
-            |'pr_bool' 'id'     
-            |'pr_double' 'id'   
-            |'pr_char' 'id'     
+            |'pr_string' 'id'  
+            |'pr_bool' 'id'    
+            |'pr_double' 'id'  
+            |'pr_char' 'id'    
             ; 
-BLOQUE: '{' INSTRUCCIONES '}'  
+BLOQUE: '{' INSTRUCCIONES '}'   
         | '{' '}' {}
     ;
 
@@ -175,47 +272,55 @@ PRINT: 'pr_print' '(' E ')' ';'
 PRINTLN: 'pr_println' '(' E ')' ';' 
     ;
 
-IF: 'pr_if' '(' E ')' BLOQUEIF ELSE     
+PRINT2: 'pr_print' '(' E ')'  
+    ;
+
+PRINTLN2: 'pr_println' '(' E ')'  
+    ;
+
+IF: 'pr_if' '(' E ')' BLOQUEIF ELSE      
     | 'pr_if' '(' E ')' INSTRUCCION ELSE   
 ;
 
 ELSE: 'pr_else' IF          
-    | 'pr_else' BLOQUEIF     
+    | 'pr_else' BLOQUEIF      
     | 'pr_else' INSTRUCCION 
     |
     ;
 
 BLOQUEIF: '{' INSTRUCCIONES '}'   
-        | '{' '}' {}
+        | '{' '}' {$$=null}
     ;
 
-TIPO_DECLARACION:'pr_const' {$$=false}
-                | {$$=true}
+TIPO_DECLARACION:'pr_const' 
+                | 
                 ; 
 
-TIPODATO_DECLARACION:'pr_int'       
-                    |'pr_string'    
-                    |'pr_bool'      
-                    |'pr_double'    
-                    |'pr_char'     
-                    ; 
-
-DECLARACION : TIPO_DECLARACION TIPODATO_DECLARACION IDS '=' E ';'
-        {   //console.log($3); 
-            $$=new Declaracion($3,$2,$5,$1,@1.first_line, @1.first_column);
-        }
+DECLARACION : 'pr_const' TIPODATO IDS '=' E ';' 
+            | TIPODATO IDS '=' E ';' 
         ;
+
+
 ASIGNACION: 'id' '=' E ';'
-        {
-            $$=new Asignar($1,$3,@1.first_line, @1.first_column);
-        }
         ;
 
-IDS:'id' ',' IDS    {$3.unshift($1); $$=$3;}
-    |'id'           {$$=[$1]}
+ASIGNACION2: 'id' '=' E 
+        
+        ;
+
+
+
+IDS:'id' ',' IDS   
+    |'id'          
     ;
 
-TYPEOF: 'pr_typeof' '(' E ')' {$$=$3};
+TYPEOF: 'pr_typeof' '(' E ')' 
+
+TOLOWER: 'pr_tolower' '(' E ')'
+TOUPPER: 'pr_toupper' '(' E ')' 
+ROUND: 'pr_round' '(' E ')' 
+
+LENGTH: 'pr_length' '(' E ')'
     
 MOD: '++' E   
     | E '++'  
@@ -224,33 +329,43 @@ MOD: '++' E
     ;
 
 
-E: '-' E %prec UMENOS     
-|  E '+' E    
-|  E '-' E     
-|  E '*' E   
-|  E '/' E      {$$= new Arithmetic($1,$3,ArithmeticOption.DIV, @1.first_line, @1.first_column);}
-|  E '**' E     {$$= new Arithmetic($1,$3,ArithmeticOption.POT, @1.first_line, @1.first_column);}
-|  E '%' E      {$$= new Arithmetic($1,$3,ArithmeticOption.MODULO, @1.first_line, @1.first_column);}
-|  E '>' E      {$$= new Relacional($1,$3,RelacionalOption.MAYOR, @1.first_line, @1.first_column);}
-|  E '<' E      {$$= new Relacional($1,$3,RelacionalOption.MENOR, @1.first_line, @1.first_column);}
-|  E '>=' E      {$$= new Relacional($1,$3,RelacionalOption.MAYORIGUAL, @1.first_line, @1.first_column);}
-|  E '<=' E      {$$= new Relacional($1,$3,RelacionalOption.MENORIGUAL, @1.first_line, @1.first_column);}
-|  E '==' E      {$$= new Relacional($1,$3,RelacionalOption.IGUALQUE, @1.first_line, @1.first_column);}
-|  E '!=' E      {$$= new Relacional($1,$3,RelacionalOption.DIFERENTEDE, @1.first_line, @1.first_column);}
-|  E '||' E     {$$= new Logica($1,$3,logicaOption.OR, @1.first_line, @1.first_column);}
-|  E '&&' E     {$$= new Logica($1,$3,logicaOption.AND, @1.first_line, @1.first_column);}
-|  E '^' E      {$$= new Logica($1,$3,logicaOption.XOR, @1.first_line, @1.first_column);}
-|  '!' E        {$$= new Logica($2,$2,logicaOption.NOT, @1.first_line, @1.first_column);}
-| MOD           {$$=$1;}
-|  TYPEOF       {$$= new Typof($1,@1.first_line, @1.first_column);}
-|  '(' E ')'    {$$=$2}
-|  F            {$$=$1;}
-| 'id'          {$$=new Acceso($1,@1.first_line, @1.first_column);console.log("desde la gramatica");}
+E: '-' E %prec UMENOS      
+|  E '+' E      
+|  E '-' E      
+|  E '*' E      
+|  E '/' E      
+|  E '**' E     
+|  E '%' E      
+|  E '>' E      
+|  E '<' E      
+|  E '>=' E     
+|  E '<=' E     
+|  E '==' E     
+|  E '!=' E     
+|  E '||' E     
+|  E '&&' E     
+|  E '^' E      
+|  '!' E        
+| MOD           
+|  TYPEOF       
+|  TOLOWER      
+|  TOUPPER      
+|  ROUND        
+|  LENGTH       
+|  '(' E ')'   
+|  F            
+| 'id'          
+| 'id' '.' 'pr_indexof' '(' E ')' 
+| 'id' '.' 'pr_push' '(' E ')' 
+|  E '?' E ':' E 
+| 'id' '[' E ']' 
+| 'id' '[' E ']' '[' E ']' 
+| 'id' '(' LLPARAMETROS ')' 
 ;
 
-F:'tk_entero'       
-    |'tk_decimal'   
-    |'tk_cadena'    
-    |'tk_caracter'  
-    |'tk_booleano'  
+F:'tk_entero'   
+|'tk_decimal'   
+|'tk_cadena'    
+|'tk_caracter'  
+|'tk_booleano'  
 ;
